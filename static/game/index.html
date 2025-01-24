@@ -5,6 +5,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="/static/game/gameState.js"></script>
     <script src="/static/game/mistral.js"></script>
+    <script src="/static/game/girlfriend.js"></script>
     <style>
         /* Layout */
         body {
@@ -431,10 +432,7 @@
         let grid = [];
         let rooms = new Map();
         let hidingPlaces = new Map(); // Add hiding places map
-        let characterPos = null;
-        let path = [];
-        let isMoving = false;
-        let moveInterval = null;
+        let girlfriend = null;
 
         // Initialize game state
         const gameState = new GameState();
@@ -471,7 +469,10 @@
                 
                 rooms = new Map(data.rooms);
                 hidingPlaces = new Map(data.hidingPlaces || []);
-                characterPos = data.characterPos || { x: 0, y: 0 };
+                
+                // Initialize girlfriend with starting position
+                girlfriend = new Girlfriend(gameState);
+                girlfriend.setCharacterPosition(data.characterPos || { x: 0, y: 0 });
 
                 // Once loaded, initialize the P5 canvas with correct dims
                 let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
@@ -499,6 +500,7 @@
         // p5.js setup
         function setup() {
             // We'll wait to createCanvas until apt.json is loaded
+            window._p5 = window;
             loadAptJson();
         }
 
@@ -512,8 +514,10 @@
             drawGrid();
             drawRooms();
             drawWallsAndDoors();
-            drawPath();
-            drawCharacter();
+            if (girlfriend) {
+                girlfriend.drawPath(window._p5, CELL_SIZE);
+                girlfriend.drawCharacter(window._p5, CELL_SIZE);
+            }
         }
 
         function drawGrid() {
@@ -580,49 +584,6 @@
             }
         }
 
-        function drawPath() {
-            if (path.length > 0 && isMoving) {
-                noFill();
-                stroke(0, 255, 0);
-                strokeWeight(2);
-                line(
-                    characterPos.x * CELL_SIZE + CELL_SIZE/2,
-                    characterPos.y * CELL_SIZE + CELL_SIZE/2,
-                    path[0].x * CELL_SIZE + CELL_SIZE/2,
-                    path[0].y * CELL_SIZE + CELL_SIZE/2
-                );
-                for (let i = 0; i < path.length - 1; i++) {
-                    line(
-                        path[i].x * CELL_SIZE + CELL_SIZE/2,
-                        path[i].y * CELL_SIZE + CELL_SIZE/2,
-                        path[i + 1].x * CELL_SIZE + CELL_SIZE/2,
-                        path[i + 1].y * CELL_SIZE + CELL_SIZE/2
-                    );
-                }
-                strokeWeight(1);
-            }
-        }
-
-        function drawCharacter() {
-            if (characterPos) {
-                textSize(CELL_SIZE * 0.8);
-                textAlign(CENTER, CENTER);
-                
-                // Change character appearance when hiding
-                if (gameState.isHiding) {
-                    text('🤫', 
-                        characterPos.x * CELL_SIZE + CELL_SIZE/2, 
-                        characterPos.y * CELL_SIZE + CELL_SIZE/2
-                    );
-                } else {
-                    text('👧', 
-                        characterPos.x * CELL_SIZE + CELL_SIZE/2, 
-                        characterPos.y * CELL_SIZE + CELL_SIZE/2
-                    );
-                }
-            }
-        }
-
         function stringToHue(str) {
             let hash = 0;
             for (let i = 0; i < str.length; i++) {
@@ -632,7 +593,7 @@
         }
 
         // Simple BFS for pathfinding
-        function findPath(start, end) {
+        window.findPath = function(start, end) {
             const queue = [[start]];
             const visited = new Set();
             const key = pos => `${pos.x},${pos.y}`;
@@ -668,42 +629,20 @@
         function moveToRoom(roomName) {
             const targetRoom = Array.from(rooms.entries())
                 .find(([name]) => name.toLowerCase() === roomName.toLowerCase());
-            if (!targetRoom || !characterPos) return false;
+            if (!targetRoom || !girlfriend) return false;
 
             const [_, cells] = targetRoom;
             if (cells.length === 0) return false;
-            path = findPath(characterPos, cells[0]);
+            path = findPath(girlfriend.getCharacterPosition(), cells[0]);
             if (path.length > 0) {
-                isMoving = true;
-                moveCharacterAlongPath();
+                girlfriend.move(path);
                 return true;
             }
             return false;
         }
 
-        function moveCharacterAlongPath() {
-            if (moveInterval) clearInterval(moveInterval);
-            moveInterval = setInterval(() => {
-                if (path.length === 0) {
-                    isMoving = false;
-                    clearInterval(moveInterval);
-                    // Update game state with new room when movement is complete
-                    const currentRoomEntry = Array.from(rooms.entries())
-                        .find(([_, cells]) => cells.some(cell => 
-                            cell.x === characterPos.x && cell.y === characterPos.y
-                        ));
-                    if (currentRoomEntry) {
-                        gameState.setCurrentRoom(currentRoomEntry[0]);
-                    }
-                    return;
-                }
-                const nextPos = path.shift();
-                characterPos = nextPos;
-            }, 200);
-        }
-
         function moveToHidingSpot(hidingSpotName) {
-            if (!characterPos || !hidingPlaces) return false;
+            if (!girlfriend) return false;
 
             // Find the hiding place coordinates from apt.json data
             const hidingSpotData = Array.from(hidingPlaces.entries())
@@ -713,11 +652,10 @@
 
             // Use the first cell of the hiding place as the target
             const targetCell = hidingSpotData[1][0];
-            path = findPath(characterPos, targetCell);
+            path = findPath(girlfriend.getCharacterPosition(), targetCell);
             
             if (path.length > 0) {
-                isMoving = true;
-                moveCharacterAlongPath();
+                girlfriend.hide(path);
                 return true;
             }
             return false;
@@ -752,69 +690,14 @@
         // Initialize Mistral API
         const mistralAPI = new MistralAPI();
 
-        async function Message() {
-            const prompt = document.getElementById('prompt').value.trim();
-            if (!prompt) return;
+        // Make rooms and hidingPlaces available globally
+        window.rooms = rooms;
+        window.hidingPlaces = hidingPlaces;
 
-            addMessageToChat('user', prompt);
-            document.getElementById('prompt').value = '';
-
-            const chatHistory = document.getElementById('chatHistory');
-            const loadingIndicator = createLoadingIndicator();
-            chatHistory.appendChild(loadingIndicator);
-
-            try {
-                // Get last 5 messages from chat history
-                const recentMessages = chatMessages.slice(-5);
-                
-                // Prepare messages array for Mistral
-                const messages = [
-                    { role: 'system', content: gameState.getPrompt() },
-                    ...recentMessages,
-                    { role: 'user', content: prompt }
-                ];
-
-                const assistantResponse = await mistralAPI.sendMessage(messages);
-                console.log('Mistral response:', assistantResponse);
-
-                try {
-                    const jsonStart = assistantResponse.indexOf('{');
-                    const jsonEnd = assistantResponse.lastIndexOf('}') + 1;
-                    const jsonContent = assistantResponse.substring(jsonStart, jsonEnd);
-                    const jsonResponse = JSON.parse(jsonContent);
-                    console.log('Parsed JSON response:', jsonResponse);
-
-                    if (jsonResponse.textMessage) {
-                        addMessageToChat('assistant', jsonResponse.textMessage);
-                    }
-                    
-                    // Handle different actions
-                    if (jsonResponse.action === 'go' && jsonResponse.to) {
-                        moveToRoom(jsonResponse.to);
-                    } else if (jsonResponse.action === 'hide' && jsonResponse.in) {
-                        const success = gameState.hide(jsonResponse.in);
-                        if (success) {
-                            // Move to the hiding spot coordinates
-                            const moveSuccess = moveToHidingSpot(jsonResponse.in);
-                            if (!moveSuccess) {
-                                // If we can't move to the hiding spot, undo the hiding state
-                                gameState.unhide();
-                                addMessageToChat('assistant', "I can't reach that hiding spot!");
-                            }
-                        } else {
-                            addMessageToChat('assistant', "I can't hide there...");
-                        }
-                    } else if (jsonResponse.action === 'unhide') {
-                        gameState.unhide();
-                    }
-                } catch (e) {
-                    console.error('Error parsing JSON from response:', e);
-                    addMessageToChat('assistant', 'Sorry, I had trouble understanding that response.');
-                }
-            } catch (error) {
-                addMessageToChat('assistant', `Error: ${error.message}`);
-            } finally {
-                loadingIndicator.remove();
+        // Update Message function to use girlfriend instance
+        function Message() {
+            if (girlfriend) {
+                girlfriend.sendMessage();
             }
         }
 
