@@ -12,6 +12,8 @@ class MistralAPI {
       body: JSON.stringify({
         model: "mistral-large-latest",
         messages: messages,
+        temperature: 0.7,
+        top_p: 0.5
       }),
     });
 

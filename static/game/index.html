@@ -432,8 +432,9 @@
         let grid = [];
         let rooms = new Map();
         let hidingPlaces = new Map(); // Add hiding places map
-        let girlfriend = null;
+        let girlfriend;
         let baseMap; // Add baseMap variable
+        let gfImage;
 
         // Initialize game state
         const gameState = new GameState();
@@ -472,7 +473,8 @@
                 hidingPlaces = new Map(data.hidingPlaces || []);
                 
                 // Initialize girlfriend with starting position
-                girlfriend = new Girlfriend(gameState);
+                gfImage = loadImage('assets/img/gf.png');
+                girlfriend = new Girlfriend(gameState, gfImage);
                 girlfriend.setCharacterPosition(data.characterPos || { x: 0, y: 0 });
 
                 // Once loaded, initialize the P5 canvas with correct dims
