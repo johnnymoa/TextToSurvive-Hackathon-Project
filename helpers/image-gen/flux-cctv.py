@@ -1,7 +1,7 @@
 import gradio as gr
 import numpy as np
 import random
-# import spaces
+import spaces
 import torch
 from diffusers import DiffusionPipeline, FlowMatchEulerDiscreteScheduler, AutoencoderTiny, AutoencoderKL
 from transformers import CLIPTextModel, CLIPTokenizer, T5EncoderModel, T5TokenizerFast
@@ -16,7 +16,7 @@ good_vae = AutoencoderKL.from_pretrained("black-forest-labs/FLUX.1-dev", subfold
 pipe = DiffusionPipeline.from_pretrained("black-forest-labs/FLUX.1-dev", torch_dtype=dtype, vae=taef1).to(device)
 
 # Load the CCTV Horror LoRA
-pipe.load_lora_weights("Alfred126/lora-horror-cctv")
+pipe.load_lora_weights("Alfred126/lora-horror-cctv", adapter_name="horror")
 
 torch.cuda.empty_cache()
 
@@ -25,13 +25,15 @@ MAX_IMAGE_SIZE = 2048
 
 pipe.flux_pipe_call_that_returns_an_iterable_of_images = flux_pipe_call_that_returns_an_iterable_of_images.__get__(pipe)
 
-# @spaces.GPU(duration=75)
+@spaces.GPU(duration=75)
 def infer(prompt, seed=42, randomize_seed=False, width=1024, height=1024, guidance_scale=3.5, num_inference_steps=28, lora_scale=0.7, progress=gr.Progress(track_tqdm=True)):
     if randomize_seed:
         seed = random.randint(0, MAX_SEED)
     generator = torch.Generator().manual_seed(seed)
     
-    # Add cross attention scale for LoRA
+    # Set the LoRA scale through the pipeline parameters
+    pipe.set_adapters_scale(lora_scale)
+    
     for img in pipe.flux_pipe_call_that_returns_an_iterable_of_images(
             prompt=prompt,
             guidance_scale=guidance_scale,
@@ -41,7 +43,6 @@ def infer(prompt, seed=42, randomize_seed=False, width=1024, height=1024, guidan
             generator=generator,
             output_type="pil",
             good_vae=good_vae,
-            cross_attention_kwargs={"scale": lora_scale},
         ):
             yield img, seed
 
@@ -145,4 +146,4 @@ Create horror-style CCTV footage images using FLUX.1 and the CCTV Horror LoRA
         outputs=[result, seed]
     )
 
-demo.launch(share=True, ssr_mode=False)
+demo.launch()

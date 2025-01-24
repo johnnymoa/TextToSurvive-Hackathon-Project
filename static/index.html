@@ -1,150 +1,34 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>The Last Message - Horror Escape Game</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .container {
-            text-align: center;
-            padding: 2rem;
-            max-width: 800px;
-            position: relative;
-            z-index: 1;
-        }
-
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
-            animation: flicker 4s infinite;
-            letter-spacing: 2px;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #bb0000;
-            margin-bottom: 3rem;
-            text-shadow: 0 0 5px #ff0000;
-        }
-
-        .menu {
-            display: grid;
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .menu-item {
-            background: rgba(20, 20, 20, 0.8);
-            padding: 1.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: white;
-            border: 1px solid #440000;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
-        }
-
-        .menu-item:hover {
-            transform: scale(1.05);
-            background: rgba(40, 0, 0, 0.8);
-            border-color: #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-        }
-
-        .menu-item h2 {
-            margin: 0 0 0.5rem 0;
-            font-size: 1.8rem;
-            color: #ff0000;
-        }
-
-        .menu-item p {
-            margin: 0;
-            color: #cccccc;
-            font-size: 1rem;
-        }
-
-        @keyframes flicker {
-            0%, 100% { opacity: 1; }
-            92% { opacity: 1; }
-            93% { opacity: 0.8; }
-            94% { opacity: 1; }
-            95% { opacity: 0.9; }
-            96% { opacity: 1; }
-        }
-
-        /* Blood drips */
-        .blood-drip {
-            position: fixed;
-            top: 0;
-            width: 3px;
-            height: 60px;
-            background: linear-gradient(to bottom, transparent, rgba(255, 0, 0, 0.8));
-            animation: drip 4s infinite;
-            opacity: 0.7;
-        }
-
-        @keyframes drip {
-            0% {
-                transform: translateY(-60px);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.7;
-            }
-            100% {
-                transform: translateY(100vh);
-                opacity: 0;
-            }
-        }
-
-      
-    </style>
-</head>
-<body>
-    <!-- Blood drip effects -->
-    <div class="blood-drip" style="left: 15%"></div>
-    <div class="blood-drip" style="left: 35%; animation-delay: 1.5s"></div>
-    <div class="blood-drip" style="left: 55%; animation-delay: 2.5s"></div>
-    <div class="blood-drip" style="left: 75%; animation-delay: 1s"></div>
-    <div class="blood-drip" style="left: 95%; animation-delay: 2s"></div>
-
-    <div class="container">
-        <h1>THE LAST MESSAGE</h1>
-        <div class="subtitle">Will your final words save them?</div>
-
-        <div class="menu">
-            <a href="game/" class="menu-item">
-                <h2>📱 PLAY THE STORY</h2>
-                <p>Experience the original nightmare</p>
-            </a>
-
-            <a href="maker/" class="menu-item">
-                <h2>🏗️ CREATE & PLAY</h2>
-                <p>Design and play your own horror scenario</p>
-            </a>
-        </div>
-
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Through Their Eyes</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+  </head>
+  <body>
+    <div class="led-bar">
+      <div class="light-beam"></div>
+    </div>
+    <div class="background-elements">
+      <img src="assets/img/blood-2.png" alt="" class="blood blood-top-left" />
+      <img src="assets/img/help.png" alt="" class="blood blood-top-right" />
+      <img src="assets/img/splatter.png" alt="" class="blood splatter" />
+      <img src="assets/img/hand.png" alt="" class="blood blood-bottom-right" />
     </div>
 
-    <script>
-        // Add random delay and duration to blood drips
-        document.querySelectorAll('.blood-drip').forEach(drip => {
-            drip.style.animationDuration = (3 + Math.random() * 2) + 's';
-        });
-    </script>
-</body>
+    <main>
+      <div class="logo">
+        <img src="assets/img/logo.png" alt="Through Their Eyes" />
+      </div>
+
+      <nav class="menu">
+        <a href="game/" class="menu-item new-game">NEW GAME</a>
+        <a href="how-to-play.html" class="menu-item how-to-play">HOW TO PLAY</a>
+      </nav>
+      <div class="character">
+        <img src="assets/img/perso.png" alt="Character" />
+      </div>
+    </main>
+  </body>
 </html>
