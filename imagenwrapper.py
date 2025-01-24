@@ -1,3 +1,64 @@
+
+
+# This wrapper provides several features:
+
+# 1. A `ImageGenerationParams` dataclass to handle parameters with default values
+# 2. A `ImageGenerationResult` class to wrap the API response
+# 3. The main `ImagenWrapper` class with:
+#    - Proper initialization with error handling
+#    - Logging support
+#    - Two methods for generation:
+#      - `generate()` using the `ImageGenerationParams` class
+#      - `generate_simple()` for a more straightforward interface
+
+# Here's how to use it:
+
+# # Example usage:
+
+# # Initialize the wrapper
+# wrapper = ImagenWrapper("https://bcdb8b7f9c4a57127c.gradio.live/")
+
+# # Method 1: Using ImageGenerationParams
+# params = ImageGenerationParams(
+#     prompt="A beautiful sunset over mountains",
+#     width=512,
+#     height=512
+# )
+# result = wrapper.generate(params)
+
+# # Method 2: Using generate_simple
+# result = wrapper.generate_simple(
+#     prompt="A beautiful sunset over mountains",
+#     width=512,
+#     height=512
+# )
+
+# # Access the results
+# print(f"Image URL: {result.image_url}")
+# print(f"Seed used: {result.seed}")
+
+# The wrapper includes:
+# - Type hints for better IDE support
+# - Error handling and logging
+# - Parameter validation
+# - Flexible parameter input (both through dataclass and dictionary)
+# - Clean result handling through a dedicated class
+
+# You can also add error handling in your code:
+
+# try:
+#     wrapper = ImagenWrapper("https://bcdb8b7f9c4a57127c.gradio.live/")
+#     result = wrapper.generate_simple("A beautiful sunset")
+#     print(f"Generated image: {result}")
+# except ConnectionError as e:
+#     print(f"Failed to connect to API: {e}")
+# except RuntimeError as e:
+#     print(f"Generation failed: {e}")
+# except Exception as e:
+#     print(f"Unexpected error: {e}")
+
+
+
 from gradio_client import Client
 from typing import Dict, Tuple, Optional, Union
 from dataclasses import dataclass
