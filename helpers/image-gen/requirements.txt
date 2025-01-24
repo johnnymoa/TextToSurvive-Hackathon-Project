@@ -1,0 +1,13 @@
+accelerate
+git+https://github.com/huggingface/diffusers.git
+torch
+xformers
+sentencepiece
+gradio
+numpy
+diffusers
+transformers
+protobuf
+accelerate
+safetensors
+peft
