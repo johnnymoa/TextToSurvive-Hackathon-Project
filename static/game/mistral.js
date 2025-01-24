@@ -13,7 +13,8 @@ class MistralAPI {
         model: "mistral-large-latest",
         messages: messages,
         temperature: 0.7,
-        top_p: 0.5
+        top_p: 0.5,
+        response_format: { type: "json_object" },
       }),
     });
 
