@@ -3243,7 +3243,7 @@
     ],
     "rooms": [
       [
-        "Kichen",
+        "Kitchen",
         [
           {
             "x": 28,
@@ -3362,8 +3362,8 @@
       ]
     ],
     "characterPos": {
-      "x": 28,
-      "y": 15
+      "x": 4,
+      "y": 16
     },
     "gridCols": 32,
     "gridRows": 20

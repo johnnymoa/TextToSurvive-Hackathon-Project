@@ -413,6 +413,14 @@
                 if (path.length === 0) {
                     isMoving = false;
                     clearInterval(moveInterval);
+                    // Update game state with new room when movement is complete
+                    const currentRoomEntry = Array.from(rooms.entries())
+                        .find(([_, cells]) => cells.some(cell => 
+                            cell.x === characterPos.x && cell.y === characterPos.y
+                        ));
+                    if (currentRoomEntry) {
+                        gameState.setCurrentRoom(currentRoomEntry[0]);
+                    }
                     return;
                 }
                 const nextPos = path.shift();

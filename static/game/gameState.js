@@ -4,9 +4,9 @@
           constructor() {
               // Initialize with rooms from apt.json
               this.rooms = [
+                "My Bedroom",
                 "Kichen",
                 "Storage",
-                "My Bedroom",
                 "Bathroom",
                 "Main Hallway",
                 "Living Room",
@@ -17,7 +17,9 @@
               ];
       
               this.hideTargets = ["bed", "coat closet", "table", "shower"];
+
               this.searchTargets = ["dresser", "stove", "desk", "cabinet", "fridge", "bookcase"];
+              
               this.items = ["lock pick", "flashlight", "knife", "remote"];
               this.useTargets = ["bedroom door", "main door", "TV"];
       
@@ -26,7 +28,10 @@
               this.inventory = [];
               this.isHiding = false;
           }
-      
+          setCurrentRoom(room) {
+            this.currentRoom = room;
+          }
+
           handleAction(action, target) {
               switch (action) {
                   case 'go':
