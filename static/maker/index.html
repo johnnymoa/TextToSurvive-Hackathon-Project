@@ -45,7 +45,9 @@
         <button id="redBtn" onclick="setTool('red')" style="background-color: #f44336">Red</button>
         |
         <input type="text" id="roomName" placeholder="Room name">
+        <input type="text" id="hidingName" placeholder="Hiding place name">
         <button id="assignRoom" onclick="setTool('assign')">Assign Room</button>
+        <button id="assignHiding" onclick="setTool('hiding')">Assign Hiding Place</button>
         <select id="roomSelect">
             <option value="">Select Destination Room</option>
         </select>
@@ -62,6 +64,12 @@
         <input type="number" id="gridCols" value="40" min="1" style="width: 60px"> × 
         <input type="number" id="gridRows" value="20" min="1" style="width: 60px">
         <button onclick="resizeGrid()">Resize Grid</button>
+
+        <!-- Add new hiding dropdown and hide button -->
+        <select id="hidingSelect">
+            <option value="">Select Hiding Place</option>
+        </select>
+        <button id="hideBtn" onclick="startHiding()">Hide!</button>
     </div>
 
     <!-- Insert a new container for the P5 sketch -->
@@ -80,6 +88,7 @@
         
         let grid = [];
         let rooms = new Map(); // roomName -> array of cells
+        let hidingPlaces = new Map(); // hidingPlaceName -> array of cells
         let currentTool = 'wall';
         let characterPos = null;
         let isDragging = false;
@@ -87,6 +96,7 @@
         let path = [];
         let isMoving = false;
         let moveInterval = null;
+        let isHiding = false;
 
         function setup() {
             GRID_COLS = parseInt(document.getElementById('gridCols').value) || 40;
@@ -116,8 +126,8 @@
         function draw() {
             background(255);
             drawGrid();
-            drawRooms();
             drawWallsAndDoors();
+            drawRooms();
             drawPath();
             drawCharacter();
             
@@ -175,6 +185,7 @@
         }
 
         function drawRooms() {
+            // Draw regular rooms
             for (let [roomName, cells] of rooms) {
                 const hue = stringToHue(roomName);
                 fill(hue, 30, 95, 0.3);
@@ -190,16 +201,46 @@
                     text(roomName, cells[0].x * CELL_SIZE + CELL_SIZE/2, cells[0].y * CELL_SIZE + CELL_SIZE/2);
                 }
             }
+
+            // Draw hiding places with a different style
+            for (let [hidingName, cells] of hidingPlaces) {
+                const hue = stringToHue(hidingName);
+                fill(hue, 30, 95, 0.3);
+                noStroke();
+                for (let cell of cells) {
+                    rect(cell.x * CELL_SIZE, cell.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
+                // Draw hiding place name
+                if (cells.length > 0) {
+                    fill(100);  // Medium gray color
+                    textAlign(CENTER, CENTER);
+                    textSize(10);
+                    text(hidingName, cells[0].x * CELL_SIZE + CELL_SIZE/2, cells[0].y * CELL_SIZE + CELL_SIZE/2);
+                }
+            }
         }
 
         function drawCharacter() {
             if (characterPos) {
                 textSize(CELL_SIZE * 0.8);
                 textAlign(CENTER, CENTER);
-                text('👧', 
-                    characterPos.x * CELL_SIZE + CELL_SIZE/2, 
-                    characterPos.y * CELL_SIZE + CELL_SIZE/2
+                const isHidden = Array.from(hidingPlaces.values()).some(cells =>
+                    cells.some(cell => cell.x === characterPos.x && cell.y === characterPos.y)
                 );
+                push();
+                if (isHidden) {
+                    tint(255, 153);  // 60% opacity
+                    text('🕵️', 
+                        characterPos.x * CELL_SIZE + CELL_SIZE/2, 
+                        characterPos.y * CELL_SIZE + CELL_SIZE/2
+                    );
+                } else {
+                    text('👧', 
+                        characterPos.x * CELL_SIZE + CELL_SIZE/2, 
+                        characterPos.y * CELL_SIZE + CELL_SIZE/2
+                    );
+                }
+                pop();
             }
         }
 
@@ -217,9 +258,17 @@
             isDragging = false;
             if (currentTool === 'assign') {
                 const roomName = document.getElementById('roomName').value;
-                if (roomName && roomBeingAssigned && roomBeingAssigned.length > 0) {
+                if (roomName && roomBeingAssigned?.length) {
                     rooms.set(roomName, roomBeingAssigned);
                     updateRoomDropdown();
+                }
+                roomBeingAssigned = null;
+            } else if (currentTool === 'hiding') {
+                const hidingName = document.getElementById('hidingName').value;
+                if (hidingName && roomBeingAssigned?.length) {
+                    hidingPlaces.set(hidingName, roomBeingAssigned);
+                    updateRoomDropdown();
+                    updateGameJson();
                 }
                 roomBeingAssigned = null;
             }
@@ -227,49 +276,51 @@
 
         function handleDraw() {
             if (!mouseInCanvas()) return;
-            
             const [gridX, gridY] = getGridCoord(mouseX, mouseY);
             
             switch(currentTool) {
-                case 'wall':
-                    grid[gridY][gridX].type = 'wall';
-                    grid[gridY][gridX].color = null;
+                case 'wall': grid[gridY][gridX].type = 'wall'; break;
+                case 'door': grid[gridY][gridX].type = 'door'; break;
+                case 'erase': grid[gridY][gridX].type = 'empty'; break;
+                case 'character': 
+                    characterPos = {x: gridX, y: gridY}; 
+                    currentTool = 'wall';  // Reset to wall tool after placing character
                     break;
-                case 'door':
-                    grid[gridY][gridX].type = 'door';
-                    grid[gridY][gridX].color = null;
-                    break;
-                case 'erase':
-                    grid[gridY][gridX].type = 'empty';
-                    grid[gridY][gridX].color = null;
-                    break;
-                case 'character':
-                    characterPos = {x: gridX, y: gridY};
-                    currentTool = 'wall'; // Reset to wall tool after placing character
-                    break;
-                case 'assign':
+                case 'assign': 
                     if (!roomBeingAssigned) roomBeingAssigned = [];
                     roomBeingAssigned.push({x: gridX, y: gridY});
                     break;
-                case 'yellow':
-                case 'blue':
-                case 'green':
-                case 'red':
+                case 'hiding':
+                    if (!roomBeingAssigned) roomBeingAssigned = [];
+                    if (!roomBeingAssigned.some(c => c.x === gridX && c.y === gridY)) {
+                        roomBeingAssigned.push({x: gridX, y: gridY});
+                    }
+                    break;
+                case 'yellow': case 'blue': case 'green': case 'red':
                     grid[gridY][gridX].type = 'empty';
                     grid[gridY][gridX].color = currentTool;
                     break;
             }
-            updateGameJson(); // Update game JSON after any grid changes
+            updateGameJson();
         }
 
         function setTool(tool) {
             currentTool = tool;
             // Reset room being assigned if switching tools
-            if (tool !== 'assign') roomBeingAssigned = null;
+            if (tool !== 'assign' && tool !== 'hiding') {
+                roomBeingAssigned = null;
+            }
             
             // Update button states
             document.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
             document.getElementById(tool + 'Btn')?.classList.add('active');
+            
+            // Clear appropriate input based on tool
+            if (tool === 'assign') {
+                document.getElementById('hidingName').value = '';
+            } else if (tool === 'hiding') {
+                document.getElementById('roomName').value = '';
+            }
         }
 
         function mouseInCanvas() {
@@ -305,14 +356,31 @@
                 select.appendChild(option.cloneNode(true));
                 viaSelect.appendChild(option);
             }
+
+            // Add the hiding dropdown population
+            const hidingSelect = document.getElementById('hidingSelect');
+            hidingSelect.innerHTML = '<option value="">Select Hiding Place</option>';
+            for (let hidingName of hidingPlaces.keys()) {
+                const option = document.createElement('option');
+                option.value = hidingName;
+                option.textContent = hidingName;
+                hidingSelect.appendChild(option);
+            }
+
             updateRoomsJson();
         }
 
         function updateRoomsJson() {
             const roomsTextArea = document.getElementById('roomsJson');
             const roomsList = Array.from(rooms.keys());
-            roomsTextArea.value = JSON.stringify(roomsList, null, 2);
-            updateGameJson(); // Update game JSON whenever rooms are updated
+            const hidingList = Array.from(hidingPlaces.keys());
+
+            roomsTextArea.value = JSON.stringify({
+                rooms: roomsList,
+                hidingPlaces: hidingList
+            }, null, 2);
+
+            updateGameJson(); // Update game JSON whenever rooms (and hiding places) are updated
         }
 
         function updateGameJson() {
@@ -320,6 +388,7 @@
             const gameData = {
                 grid: grid,
                 rooms: Array.from(rooms.entries()),
+                hidingPlaces: Array.from(hidingPlaces.entries()),
                 characterPos: characterPos,
                 gridCols: GRID_COLS,
                 gridRows: GRID_ROWS
@@ -446,6 +515,7 @@
             const mapData = {
                 grid: grid,
                 rooms: Array.from(rooms.entries()),
+                hidingPlaces: Array.from(hidingPlaces.entries()),
                 characterPos: characterPos,
                 gridCols: GRID_COLS,
                 gridRows: GRID_ROWS
@@ -477,6 +547,7 @@
             // Load saved data
             grid = data.grid;
             rooms = new Map(data.rooms);
+            hidingPlaces = new Map(data.hidingPlaces || []);
             characterPos = data.characterPos;
             updateRoomDropdown();
             updateGameJson(); // Update game JSON after loading
@@ -510,6 +581,7 @@
                 // Load saved data
                 grid = data.grid;
                 rooms = new Map(data.rooms || []);
+                hidingPlaces = new Map(data.hidingPlaces || []);
                 characterPos = data.characterPos;
                 
                 updateRoomDropdown();
@@ -577,6 +649,20 @@
             isMoving = false;
 
             updateGameJson(); // Update game JSON after resizing
+        }
+
+        function startHiding() {
+            const hidingName = document.getElementById('hidingSelect').value;
+            if (!hidingName || !characterPos) return;
+
+            const targetCells = hidingPlaces.get(hidingName);
+            if (!targetCells || targetCells.length === 0) return;
+
+            path = findPath(characterPos, targetCells[0]);
+            if (path.length > 0) {
+                isMoving = true;
+                moveCharacterAlongPath();
+            }
         }
     </script>
 </body>

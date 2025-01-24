@@ -1,6 +1,7 @@
 class MistralAPI {
     constructor() {
         this.apiKey = localStorage.getItem('mistralApiKey');
+        this.temperature = 0.7; // Default temperature
     }
 
     setApiKey(key) {
@@ -10,6 +11,15 @@ class MistralAPI {
 
     getApiKey() {
         return this.apiKey;
+    }
+
+    setTemperature(temp) {
+        // Ensure temperature is between 0 and 1
+        this.temperature = Math.max(0, Math.min(1, temp));
+    }
+
+    getTemperature() {
+        return this.temperature;
     }
 
     async sendMessage(messages) {
@@ -25,7 +35,8 @@ class MistralAPI {
             },
             body: JSON.stringify({
                 model: 'mistral-large-latest',
-                messages: messages
+                messages: messages,
+                temperature: this.temperature  // Add temperature to the request
             })
         });
 
