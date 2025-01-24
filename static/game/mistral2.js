@@ -1,6 +1,6 @@
 class MistralAPI {
   constructor() {
-    // We don't need to store API key anymore since it's managed server-side
+    // No need for API key handling anymore
   }
 
   async sendMessage(messages) {

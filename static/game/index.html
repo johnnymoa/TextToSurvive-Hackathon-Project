@@ -4,7 +4,7 @@
     <title>Get Me Out! - Apartment Escape Game with Chat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="/static/game/gameState.js"></script>
-    <script src="/static/game/mistral.js"></script>
+    <script src="/static/game/mistral2.js"></script>
     <style>
         /* Layout */
         body {
@@ -417,13 +417,6 @@
             </div>
         </div>
     </div>
-    <div id="apiKeyModal">
-        <div class="modal-content">
-            <h3>Enter Mistral API Key</h3>
-            <input type="password" id="apiKey" placeholder="Enter your API key">
-            <button onclick="saveApiKey()">Save</button>
-        </div>
-    </div>
 
     <script>
         /* 
@@ -447,7 +440,6 @@
         const gameState = new GameState();
 
         // Chat variables
-        let apiKey = localStorage.getItem('mistralApiKey');
         let chatMessages = []; // Array to store chat history
 
         // Load apt.json upon page start
@@ -764,12 +756,6 @@
             const prompt = document.getElementById('prompt').value.trim();
             if (!prompt) return;
 
-            if (!mistralAPI.getApiKey()) {
-                alert('Please enter your Mistral API key first');
-                document.getElementById('apiKeyModal').style.display = 'flex';
-                return;
-            }
-
             addMessageToChat('user', prompt);
             document.getElementById('prompt').value = '';
 
@@ -832,15 +818,7 @@
             }
         }
 
-        function saveApiKey() {
-            const key = document.getElementById('apiKey').value.trim();
-            if (key) {
-                mistralAPI.setApiKey(key);
-                document.getElementById('apiKeyModal').style.display = 'none';
-            }
-        }
-
-        // Allow ing message with Enter
+        // Allow sending message with Enter
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('prompt').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
@@ -848,10 +826,6 @@
                     Message();
                 }
             });
-
-            if (!apiKey) {
-                document.getElementById('apiKeyModal').style.display = 'flex';
-            }
         });
     </script>
 </body>
