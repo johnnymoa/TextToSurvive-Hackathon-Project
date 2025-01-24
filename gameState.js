@@ -81,3 +81,4 @@ Remember:
 
 // Export the class for use in other files
 export default GameState;
+

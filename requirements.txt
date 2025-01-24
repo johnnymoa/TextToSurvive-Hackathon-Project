@@ -1,2 +1,7 @@
 fastapi
 uvicorn[standard]
+flask==2.0.1
+requests==2.26.0
+pydub==0.25.1
+flask-cors==3.0.10
+python-multipart==0.0.5
