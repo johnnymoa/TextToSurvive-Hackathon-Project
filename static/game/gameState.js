@@ -16,12 +16,18 @@
                 "North Hallway"
               ];
       
-              this.hideTargets = ["bed", "coat closet", "table", "shower"];
+              this.hideTargets = [
+                {"room": "My Bedroom", "hiding_place": "bed"},
+                {"room": "North Hallway", "hiding_place": "coat closet"},
+                {"room": "Dining Room", "hiding_place": "table"},
+                {"room": "Guest Bedroom", "hiding_place": "bed"}
+              ]
 
-              this.searchTargets = ["dresser", "stove", "desk", "cabinet", "fridge", "bookcase"];
-              
-              this.items = ["lock pick", "flashlight", "knife", "remote"];
-              this.useTargets = ["bedroom door", "main door", "TV"];
+              this.searchTargets = ["dresser", "desk", "bookcase", "cabinet", "dead body", "fridge", "stove", "coffee table"];
+
+              this.items = ["lock pick", "book note", "flashlight", "knife", "oil", "remote"];
+
+              this.useTargets = ["bedroom door", "bookcase", "storage door", "dead body","coffee table","TV"];
       
               // Track current game state
               this.currentRoom = this.rooms[0];

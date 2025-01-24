@@ -57,6 +57,7 @@
         |
         <button onclick="saveMap()">Save Map</button>
         <button onclick="loadMap()">Load Map</button>
+        <button onclick="loadFromJson()">Load from JSON</button>
         |
         <input type="number" id="gridCols" value="40" min="1" style="width: 60px"> × 
         <input type="number" id="gridRows" value="20" min="1" style="width: 60px">
@@ -69,7 +70,7 @@
     <!-- Move the JSON text areas here so they appear after the editor and canvas -->
     <div style="margin-top: 20px; width: 100%; max-width: 1200px; text-align: center;">
         <textarea id="roomsJson" readonly style="width: 90%; height: 100px; margin: 10px; padding: 10px;" placeholder="Rooms will appear here in JSON format"></textarea>
-        <textarea id="gameJson" readonly style="width: 90%; height: 200px; margin: 10px; padding: 10px;" placeholder="Complete game definition will appear here in JSON format"></textarea>
+        <textarea id="gameJson"  style="width: 90%; height: 200px; margin: 10px; padding: 10px;" placeholder="Complete game definition will appear here in JSON format"></textarea>
     </div>
 
     <script>
@@ -479,6 +480,43 @@
             characterPos = data.characterPos;
             updateRoomDropdown();
             updateGameJson(); // Update game JSON after loading
+        }
+
+        function loadFromJson() {
+            const gameJson = document.getElementById('gameJson').value;
+            if (!gameJson) {
+                alert('Please paste a valid game JSON in the textarea below');
+                return;
+            }
+
+            try {
+                const data = JSON.parse(gameJson);
+                
+                // Validate required fields
+                if (!data.grid || !Array.isArray(data.grid)) {
+                    throw new Error('Invalid grid data');
+                }
+
+                // Update grid dimensions and input fields
+                GRID_COLS = data.gridCols || data.grid[0].length;
+                GRID_ROWS = data.gridRows || data.grid.length;
+                document.getElementById('gridCols').value = GRID_COLS;
+                document.getElementById('gridRows').value = GRID_ROWS;
+                
+                // Resize canvas and initialize grid
+                resizeCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+                initGrid();
+                
+                // Load saved data
+                grid = data.grid;
+                rooms = new Map(data.rooms || []);
+                characterPos = data.characterPos;
+                
+                updateRoomDropdown();
+                updateGameJson();
+            } catch (error) {
+                alert('Error loading JSON: ' + error.message);
+            }
         }
 
         function removeSelectedRoom() {
