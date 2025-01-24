@@ -416,7 +416,12 @@
           "color": null
         },
         {
-          "type": "empty",
+          "type": "wall",
+          "room": null,
+          "color": "yellow"
+        },
+        {
+          "type": "wall",
           "room": null,
           "color": "yellow"
         },
@@ -426,17 +431,12 @@
           "color": "yellow"
         },
         {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": "yellow"
         },
         {
-          "type": "empty",
-          "room": null,
-          "color": "yellow"
-        },
-        {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": "yellow"
         },
@@ -578,7 +578,12 @@
           "color": null
         },
         {
-          "type": "empty",
+          "type": "wall",
+          "room": null,
+          "color": "yellow"
+        },
+        {
+          "type": "wall",
           "room": null,
           "color": "yellow"
         },
@@ -588,17 +593,12 @@
           "color": "yellow"
         },
         {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": "yellow"
         },
         {
-          "type": "empty",
-          "room": null,
-          "color": "yellow"
-        },
-        {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": "yellow"
         },
@@ -1784,7 +1784,7 @@
       ],
       [
         {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": null
         },
@@ -2375,12 +2375,12 @@
           "color": null
         },
         {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": null
         },
         {
-          "type": "empty",
+          "type": "wall",
           "room": null,
           "color": null
         },
@@ -2639,7 +2639,7 @@
           "color": null
         },
         {
-          "type": "door",
+          "type": "wall",
           "room": null,
           "color": null
         },
@@ -3269,11 +3269,7 @@
         [
           {
             "x": 4,
-            "y": 16
-          },
-          {
-            "x": 4,
-            "y": 16
+            "y": 17
           }
         ]
       ],
@@ -3376,12 +3372,12 @@
         [
           {
             "x": 28,
-            "y": 17
+            "y": 18
           }
         ]
       ],
       [
-        "shower",
+        "bathtub",
         [
           {
             "x": 15,
@@ -3400,7 +3396,7 @@
       ]
     ],
     "characterPos": {
-      "x": 4,
+      "x": 7,
       "y": 16
     },
     "gridCols": 32,

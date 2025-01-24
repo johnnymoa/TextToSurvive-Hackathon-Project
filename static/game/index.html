@@ -433,6 +433,7 @@
         let rooms = new Map();
         let hidingPlaces = new Map(); // Add hiding places map
         let girlfriend = null;
+        let baseMap; // Add baseMap variable
 
         // Initialize game state
         const gameState = new GameState();
@@ -501,6 +502,7 @@
         function setup() {
             // We'll wait to createCanvas until apt.json is loaded
             window._p5 = window;
+            baseMap = loadImage('/assets/img/appartment/BaseMap.PNG'); // Load the base map image
             loadAptJson();
         }
 
@@ -510,10 +512,14 @@
                 // No grid loaded yet or apt.json not ready
                 return;
             }
-            background(255);
-            drawGrid();
-            drawRooms();
-            drawWallsAndDoors();
+            // background(255);
+            // Draw the base map image
+            if (baseMap) {
+                image(baseMap, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+            }
+            // drawGrid();
+             drawRooms();
+            // drawWallsAndDoors();
             if (girlfriend) {
                 girlfriend.drawPath(window._p5, CELL_SIZE);
                 girlfriend.drawCharacter(window._p5, CELL_SIZE);
@@ -542,10 +548,47 @@
                     fill(0);
                     textAlign(CENTER, CENTER);
                     textSize(10);
-                    text(roomName, 
-                        cells[0].x * CELL_SIZE + CELL_SIZE/2, 
-                        cells[0].y * CELL_SIZE + CELL_SIZE/2
+                    text(
+                        roomName,
+                        cells[0].x * CELL_SIZE + CELL_SIZE / 2,
+                        cells[0].y * CELL_SIZE + CELL_SIZE / 2
                     );
+                }
+            }
+
+            for (let [hidingName, hideCells] of hidingPlaces) {
+                // Draw the hiding place cells
+                fill(100, 30, 95, 0.3);
+                noStroke();
+                for (let cell of hideCells) {
+                    rect(cell.x * CELL_SIZE, cell.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
+
+                if (hideCells.length > 0) {
+                    const x = hideCells[0].x * CELL_SIZE + CELL_SIZE / 2;
+                    const y = hideCells[0].y * CELL_SIZE + CELL_SIZE / 2;
+
+                    push();
+                    textAlign(CENTER, CENTER);
+                    textSize(10);
+
+                    // Measure exactly the text size (no extra padding)
+                    const labelWidth = textWidth(hidingName);
+                    const labelHeight = textAscent() + textDescent();
+
+                    // Draw a centered background rectangle 
+                    // that's just as wide/tall as the text
+                    rectMode(CENTER);
+                    fill('#f1c94f');
+                    noStroke();
+                    rect(x, y, labelWidth, labelHeight/2, 2);
+                    pop();
+
+                    // Draw the text on top
+                    fill(0);
+                    textAlign(CENTER, CENTER);
+                    textSize(10);
+                    text(hidingName, x, y);
                 }
             }
         }

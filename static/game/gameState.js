@@ -72,6 +72,7 @@
             if (spot) {
                 this.isHiding = true;
                 this.currentHidingSpot = spot;
+                this.currentRoom = spot.room; // Set current room to the hiding spot's room
                 return true;
             }
             return false;
