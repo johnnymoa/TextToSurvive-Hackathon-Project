@@ -4,6 +4,7 @@
     <title>Get Me Out! - Apartment Escape Game with Chat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="/static/game/gameState.js"></script>
+    <script src="/static/game/mistral.js"></script>
     <style>
         /* Layout */
         body {
@@ -454,11 +455,14 @@
             chatMessages.push({ role, content });
         }
 
+        // Initialize Mistral API
+        const mistralAPI = new MistralAPI();
+
         async function Message() {
             const prompt = document.getElementById('prompt').value.trim();
             if (!prompt) return;
 
-            if (!apiKey) {
+            if (!mistralAPI.getApiKey()) {
                 alert('Please enter your Mistral API key first');
                 document.getElementById('apiKeyModal').style.display = 'flex';
                 return;
@@ -482,25 +486,8 @@
                     { role: 'user', content: prompt }
                 ];
 
-                const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${apiKey}`
-                    },
-                    body: JSON.stringify({
-                        model: 'mistral-large-latest',
-                        messages: messages
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log('Mistral response:', data.choices[0].message.content);
-                const assistantResponse = data.choices[0].message.content || "";
+                const assistantResponse = await mistralAPI.sendMessage(messages);
+                console.log('Mistral response:', assistantResponse);
 
                 try {
                     const jsonStart = assistantResponse.indexOf('{');
@@ -529,8 +516,7 @@
         function saveApiKey() {
             const key = document.getElementById('apiKey').value.trim();
             if (key) {
-                apiKey = key;
-                localStorage.setItem('mistralApiKey', key);
+                mistralAPI.setApiKey(key);
                 document.getElementById('apiKeyModal').style.display = 'none';
             }
         }
