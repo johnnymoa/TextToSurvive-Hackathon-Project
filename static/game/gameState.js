@@ -22,8 +22,8 @@
                     "hiding_type": "under"
                 },
                 {
-                    "room": "North Hallway", 
-                    "hiding_place": "coat closet",
+                    "room": "Bathroom", 
+                    "hiding_place": "bathtub",
                     "hiding_type": "in"
                 },
                 {
