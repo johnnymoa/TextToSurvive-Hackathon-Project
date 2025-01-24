@@ -1,12 +1,14 @@
 class Girlfriend {
-    constructor(gameState) {
+    constructor(gameState, girlfriendImg) {
         this.gameState = gameState;
         this.chatMessages = [];
         this.characterPos = null;
+        this.previousPos = null;
         this.path = [];
         this.isMoving = false;
         this.moveInterval = null;
         this.mistralAPI = new MistralAPI();
+        this.img = girlfriendImg;
         
         // Set up event listeners
         document.addEventListener('DOMContentLoaded', () => {
@@ -157,23 +159,24 @@ class Girlfriend {
         return false;
     }
 
-    move(newPath) {
-        this.path = newPath;
+    move(path) {
+        if (!path || path.length === 0) return;
+        
         this.isMoving = true;
-        this.moveCharacterAlongPath();
-    }
-
-    hide(newPath) {
-        this.path = newPath;
-        this.isMoving = true;
-        this.moveCharacterAlongPath();
-    }
-
-    moveCharacterAlongPath() {
-        if (this.moveInterval) clearInterval(this.moveInterval);
+        if (localStorage.getItem("isSoundOn") !== "false") {
+            handleWalkingSound(true); // Start walking sound
+        }
+        
+        if (this.moveInterval) {
+            clearInterval(this.moveInterval);
+            handleWalkingSound(false); // Stop any existing walking sound
+        }
+        
+        this.path = path;
         this.moveInterval = setInterval(() => {
             if (this.path.length === 0) {
                 this.isMoving = false;
+                handleWalkingSound(false); // Stop walking sound
                 clearInterval(this.moveInterval);
                 // Update game state with new room when movement is complete
                 const currentRoomEntry = Array.from(rooms.entries())
@@ -190,24 +193,87 @@ class Girlfriend {
         }, 200);
     }
 
+    hide(path) {
+        if (!path || path.length === 0) return;
+        
+        this.isMoving = true;
+        if (localStorage.getItem("isSoundOn") !== "false") {
+            handleWalkingSound(true); // Start walking sound
+        }
+        
+        if (this.moveInterval) {
+            clearInterval(this.moveInterval);
+            handleWalkingSound(false); // Stop any existing walking sound
+        }
+        
+        this.path = path;
+        this.moveInterval = setInterval(() => {
+            if (this.path.length === 0) {
+                this.isMoving = false;
+                handleWalkingSound(false); // Stop walking sound
+                clearInterval(this.moveInterval);
+                // Handle hiding logic...
+                return;
+            }
+            const nextPos = this.path.shift();
+            this.characterPos = nextPos;
+        }, 200);
+    }
+
+    moveCharacterAlongPath() {
+        if (this.moveInterval) {
+            clearInterval(this.moveInterval);
+            handleWalkingSound(false);
+        }
+        
+        if (localStorage.getItem("isSoundOn") !== "false") {
+            handleWalkingSound(true);
+        }
+        
+        this.moveInterval = setInterval(() => {
+            if (this.path.length === 0) {
+                this.isMoving = false;
+                handleWalkingSound(false);
+                clearInterval(this.moveInterval);
+                const currentRoomEntry = Array.from(rooms.entries())
+                    .find(([_, cells]) => cells.some(cell => 
+                        cell.x === this.characterPos.x && cell.y === this.characterPos.y
+                    ));
+                if (currentRoomEntry) {
+                    this.gameState.setCurrentRoom(currentRoomEntry[0]);
+                }
+                return;
+            }
+            this.previousPos = { ...this.characterPos };
+            const nextPos = this.path.shift();
+            this.characterPos = nextPos;
+        }, 200);
+    }
+
     // Drawing methods
-    drawCharacter(p5, CELL_SIZE) {
+    draw(p5, CELL_SIZE) {
         if (this.characterPos) {
             p5.textSize(CELL_SIZE * 0.8);
             p5.textAlign(p5.CENTER, p5.CENTER);
             
-            // Change character appearance when hiding
-            if (this.gameState.isHiding) {
-                p5.text('🤫', 
-                    this.characterPos.x * CELL_SIZE + CELL_SIZE/2, 
-                    this.characterPos.y * CELL_SIZE + CELL_SIZE/2
-                );
+            p5.push();
+            if (this.previousPos && this.characterPos.x > this.previousPos.x) {
+                p5.scale(-1, 1);
+                if (this.gameState.isHiding) {
+                    p5.tint(255, 153);
+                    p5.image(this.img, -this.characterPos.x * CELL_SIZE - CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                } else {
+                    p5.image(this.img, -this.characterPos.x * CELL_SIZE - CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
             } else {
-                p5.text('👧', 
-                    this.characterPos.x * CELL_SIZE + CELL_SIZE/2, 
-                    this.characterPos.y * CELL_SIZE + CELL_SIZE/2
-                );
+                if (this.gameState.isHiding) {
+                    p5.tint(255, 153);
+                    p5.image(this.img, this.characterPos.x * CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                } else {
+                    p5.image(this.img, this.characterPos.x * CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
             }
+            p5.pop();
         }
     }
 

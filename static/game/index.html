@@ -1,389 +1,16 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Get Me Out! - Apartment Escape Game with Chat</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
     <script src="/static/game/gameState.js"></script>
     <script src="/static/game/mistral.js"></script>
     <script src="/static/game/girlfriend.js"></script>
-    <style>
-        /* Layout */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            display: flex;
-            background-color: #220a0a;
-            height: 100vh;
-            position: relative;
-            overflow: hidden;
-        }
-        #gameContainer {
-            display: flex;
-            width: 100%;
-            height: 100%;
-            max-height: 100vh;
-            position: relative;
-            z-index: 2;
-        }
-        #mapSection {
-            flex: 1;
-            min-width: 0;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        /* We'll place the P5 canvas in here */
-        .map-wrapper {
-            margin: 20px;
-            transform-origin: top left;
-        }
-
-        #chatSection {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            background: #000000;
-            border-radius: 38px;
-            overflow: hidden;
-        }
-        #chatHistory {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            background: #f8f8fa;
-        }
-        /* Style moderne pour la barre de scroll */
-        #chatHistory::-webkit-scrollbar {
-            width: 6px;
-        }
-        #chatHistory::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        #chatHistory::-webkit-scrollbar-thumb {
-            background: #d1d1d6;
-            border-radius: 3px;
-        }
-        #chatControls {
-            padding: 16px;
-            background: #ffffff;
-            display: flex;
-            gap: 12px;
-            border-top: 1px solid #f1f1f5;
-        }
-        .chat-message {
-            padding: 12px 16px;
-            margin: 6px 0;
-            border-radius: 20px;
-            max-width: 75%;
-            font-size: 0.95em;
-            line-height: 1.4;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-        }
-        .user-message {
-            background: #007aff;
-            color: white;
-            margin-left: auto;
-            border-radius: 20px 20px 4px 20px;
-        }
-        .assistant-message {
-            background: #f1f1f5;
-            color: #000000;
-            margin-right: auto;
-            border-radius: 20px 20px 20px 4px;
-        }
-        input {
-            flex: 1;
-            padding: 12px 16px;
-            border: none;
-            border-radius: 20px;
-            font-family: inherit;
-            font-size: 0.95em;
-            background: #f1f1f5;
-            transition: background 0.2s;
-        }
-        input:focus {
-            outline: none;
-            background: #e5e5ea;
-        }
-        input::placeholder {
-            color: #8e8e93;
-        }
-        button {
-            padding: 8px;
-            width: 40px;
-            height: 40px;
-            background: #007aff;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s, background 0.2s;
-        }
-        button:hover {
-            background: #0056b3;
-            transform: scale(1.05);
-        }
-        /* Style moderne pour l'indicateur de chargement */
-        .loading-dots {
-            display: inline-flex;
-            gap: 4px;
-            padding: 8px 12px;
-            background: #f1f1f5;
-            border-radius: 16px;
-        }
-        .dot {
-            width: 6px;
-            height: 6px;
-            background: #8e8e93;
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-        .dot:nth-child(1) {
-            animation-delay: -0.32s;
-        }
-        .dot:nth-child(2) {
-            animation-delay: -0.16s;
-        }
-        @keyframes bounce {
-            0%,
-            80%,
-            100% {
-                transform: scale(0);
-            }
-            40% {
-                transform: scale(1);
-            }
-        }
-
-        /* Modal for API key (if needed) */
-        #apiKeyModal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-        }
-        #apiKey {
-            width: 100%;
-            margin: 10px 0;
-            padding: 8px;
-        }
-
-        /* Modifier les styles du chat et du mockup */
-        .phone-mockup {
-            position: relative;
-            width: 400px;
-            height: 100%;
-            max-height: 800px;
-            min-height: 600px;
-            background: url("/static/assets/img/phone.png") no-repeat center;
-            background-size: contain;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: auto;
-            padding: 35px 0;
-        }
-
-        .phone-screen {
-            width: 90%;
-            height: 96.5%;
-            position: relative;
-            overflow: hidden;
-            margin: 0;
-            border-radius: 50px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Media queries pour s'adapter aux différentes tailles d'écran */
-        @media (max-height: 700px) {
-            .phone-mockup {
-                min-height: 500px;
-                padding: 10px 0;
-            }
-
-            .phone-screen {
-                width: 90%;
-                height: 96.5%;
-            }
-
-            #chatHistory {
-                padding: 8px;
-            }
-
-            #chatControls {
-                padding: 8px;
-            }
-        }
-
-        @media (max-width: 1200px) {
-            #mapSection {
-                flex: 0.6;
-            }
-        }
-
-        /* Ajouter les nouveaux styles pour l'en-tête du chat */
-        #chatHeader {
-            padding: 16px;
-            justify-content: center;
-            background: #ffffff;
-            border-bottom: 1px solid #f1f1f5;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .profile-picture {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #f1f1f5;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chat-name {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #000000;
-        }
-
-        /* LED Bar */
-        .led-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(
-                90deg,
-                transparent 0%,
-                rgba(255, 0, 0, 0.4) 20%,
-                rgba(255, 0, 0, 0.8) 35%,
-                rgba(255, 50, 50, 1) 50%,
-                rgba(255, 0, 0, 0.8) 65%,
-                rgba(255, 0, 0, 0.4) 80%,
-                transparent 100%
-            );
-            z-index: 100;
-            animation: ledFlicker 4s infinite, ledPulse 10s infinite;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7),
-                        0 0 35px rgba(255, 0, 0, 0.5),
-                        0 0 50px rgba(255, 0, 0, 0.4),
-                        0 0 70px rgba(155, 0, 0, 0.3);
-            filter: blur(0.6px);
-        }
-
-        .light-beam {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 250px;
-            background: linear-gradient(
-                180deg,
-                rgba(255, 0, 0, 0.3) 0%,
-                rgba(255, 0, 0, 0.2) 20%,
-                rgba(255, 0, 0, 0.15) 30%,
-                rgba(155, 0, 0, 0.08) 60%,
-                transparent 100%
-            );
-            animation: beamFlicker 4s infinite;
-            pointer-events: none;
-            filter: blur(2px);
-        }
-
-        @keyframes ledFlicker {
-            0% { opacity: 1; }
-            95% { opacity: 1; }
-            96% { opacity: 0.3; }
-            97% { opacity: 1; }
-            98% { opacity: 0.2; }
-            99% { opacity: 0.9; }
-            100% { opacity: 1; }
-        }
-
-        @keyframes ledPulse {
-            0% { filter: brightness(1) blur(0.6px); }
-            50% { filter: brightness(1.3) blur(0.4px); }
-            100% { filter: brightness(1) blur(0.6px); }
-        }
-
-        @keyframes beamFlicker {
-            0% { opacity: 0.7; }
-            95% { opacity: 0.7; }
-            96% { opacity: 0.2; }
-            97% { opacity: 0.7; }
-            98% { opacity: 0.1; }
-            99% { opacity: 0.6; }
-            100% { opacity: 0.7; }
-        }
-
-        /* Background Elements */
-        .background-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .blood {
-            position: absolute;
-            top: 94%;
-            opacity: 0.6;
-            transform: rotate(20deg);
-            right: 10%;
-        }
-
-        .blood-top-left {
-            top: 0;
-            left: 0;
-            width: 300px;
-        }
-
-        .blood-top-right {
-            top: 0;
-            right: 0;
-            width: 200px;
-            transform: rotate(20deg);
-        }
-
-        .splatter {
-            bottom: 20%;
-            left: 10%;
-            width: 200px;
-        }
-
-        .blood-bottom-right {
-            bottom: 0;
-            right: 0;
-            position: absolute;
-            top: 90%;
-            left: 90%;
-            width: 200px;
-        }
-    </style>
+    <script src="/static/game/clown.js"></script>
+    <link rel="stylesheet" href="/static/assets/css/game-style.css" />
 </head>
+
 <body>
     <div class="led-bar">
         <div class="light-beam"></div>
@@ -412,12 +39,35 @@
                     <div id="chatHistory"></div>
                     <div id="chatControls">
                         <input type="text" id="prompt" placeholder="Type your message...">
-                        <button onclick="Message()">▶</button>
+                        <button onclick="Message()">
+                            <svg width="683" height="683" viewBox="0 0 683 683" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M22.2666 1.86666C19.5999 2.93333 16.5333 4.39999 15.4666 5.19999C11.9999 8.13333 9.33325 15.7333 9.33325 22.5333C9.33325 28.1333 65.4666 283.333 66.9333 284.667C67.3333 285.067 339.333 332.267 372.4 337.733C381.733 339.333 389.333 340.933 389.333 341.333C389.333 341.733 381.733 343.333 372.4 344.933C339.2 350.4 67.3333 397.6 66.9333 398C65.4666 399.333 9.33325 654.533 9.33325 660.133C9.33325 675.867 21.0666 685.333 35.8666 681.333C42.6666 679.467 662.267 362 666.4 358.133C671.333 353.733 673.333 348.8 673.333 341.333C673.333 333.867 671.333 328.933 666.4 324.533C662.533 320.933 43.0666 3.19999 36.2666 1.33333C29.9999 -0.400007 28.5333 -0.266674 22.2666 1.86666Z"
+                                    fill="white" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="sound-button" onclick="toggleSound()">
+        <img src="/static/assets/img/sondon.png" alt="Sound control" id="soundIcon" />
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="/static/assets/sounds/music.mp3" type="audio/mp3" />
+    </audio>
+
+    <audio id="messageSound">
+        <source src="/static/assets/sounds/message.wav" type="audio/wav" />
+    </audio>
+
+    <audio id="walkingSound" loop>
+        <source src="/static/assets/sounds/walking.mp3" type="audio/mp3" />
+    </audio>
 
     <script>
         /* 
@@ -433,8 +83,10 @@
         let rooms = new Map();
         let hidingPlaces = new Map(); // Add hiding places map
         let girlfriend;
+        let clown;
         let baseMap; // Add baseMap variable
-        let gfImage;
+        let girlfriendImg;
+        let clownImg;
 
         // Initialize game state
         const gameState = new GameState();
@@ -455,7 +107,7 @@
                 GRID_COLS = data.gridCols || 40;
                 GRID_ROWS = data.gridRows || 20;
                 grid = data.grid || [];
-                
+
                 // Ensure each cell has the color property if it exists in the data
                 for (let y = 0; y < GRID_ROWS; y++) {
                     for (let x = 0; x < GRID_COLS; x++) {
@@ -468,14 +120,23 @@
                         }
                     }
                 }
-                
+
                 rooms = new Map(data.rooms);
                 hidingPlaces = new Map(data.hidingPlaces || []);
-                
+
                 // Initialize girlfriend with starting position
                 gfImage = loadImage('assets/img/gf.png');
-                girlfriend = new Girlfriend(gameState, gfImage);
+                girlfriend = new Girlfriend(gameState, girlfriendImg);
                 girlfriend.setCharacterPosition(data.characterPos || { x: 0, y: 0 });
+
+                // Initialize clown with starting position
+                clown = new Clown(gameState, clownImg);
+                // Start clown at a random room
+                const roomEntries = Array.from(rooms.entries());
+                const randomRoom = roomEntries[Math.floor(Math.random() * roomEntries.length)];
+                if (randomRoom && randomRoom[1].length > 0) {
+                    clown.setCharacterPosition(randomRoom[1][0]);
+                }
 
                 // Once loaded, initialize the P5 canvas with correct dims
                 let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
@@ -493,7 +154,6 @@
             const scale = availableWidth / actualCanvasWidth;
             const mapWrapper = document.querySelector('#mapSection .map-wrapper');
             if (mapWrapper) {
-                // use CSS zoom or transform
                 mapWrapper.style.zoom = scale;
             }
         }
@@ -504,7 +164,11 @@
         function setup() {
             // We'll wait to createCanvas until apt.json is loaded
             window._p5 = window;
+
             baseMap = loadImage('/assets/img/appartment/BaseMap.PNG'); // Load the base map image
+            girlfriendImg = loadImage('/assets/img/gf.png'); // Load the base map image
+            clownImg = loadImage('/assets/img/clown.png'); // Load the base map image
+
             loadAptJson();
         }
 
@@ -515,26 +179,30 @@
                 return;
             }
             // background(255);
-            // Draw the base map image
             if (baseMap) {
                 image(baseMap, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
             }
             // drawGrid();
-             drawRooms();
+            drawRooms();
             // drawWallsAndDoors();
             if (girlfriend) {
                 girlfriend.drawPath(window._p5, CELL_SIZE);
-                girlfriend.drawCharacter(window._p5, CELL_SIZE);
+                girlfriend.draw(window._p5, CELL_SIZE);
+            }
+            if (clown) {
+                clown.checkForGirlfriend(girlfriend);
+                clown.drawPath(window._p5, CELL_SIZE);
+                clown.draw(window._p5, CELL_SIZE);
             }
         }
 
         function drawGrid() {
             stroke(200);
             for (let x = 0; x <= GRID_COLS; x++) {
-                line(x * CELL_SIZE, 0, x * CELL_SIZE, GRID_ROWS*CELL_SIZE);
+                line(x * CELL_SIZE, 0, x * CELL_SIZE, GRID_ROWS * CELL_SIZE);
             }
             for (let y = 0; y <= GRID_ROWS; y++) {
-                line(0, y * CELL_SIZE, GRID_COLS*CELL_SIZE, y * CELL_SIZE);
+                line(0, y * CELL_SIZE, GRID_COLS * CELL_SIZE, y * CELL_SIZE);
             }
         }
 
@@ -583,7 +251,7 @@
                     rectMode(CENTER);
                     fill('#f1c94f');
                     noStroke();
-                    rect(x, y, labelWidth, labelHeight/2, 2);
+                    rect(x, y, labelWidth, labelHeight / 2, 2);
                     pop();
 
                     // Draw the text on top
@@ -609,7 +277,7 @@
                         rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
                     } else if (cell.color) {
                         noStroke();
-                        switch(cell.color) {
+                        switch (cell.color) {
                             case 'yellow':
                                 fill('#ffeb3b');
                                 break;
@@ -638,7 +306,7 @@
         }
 
         // Simple BFS for pathfinding
-        window.findPath = function(start, end) {
+        window.findPath = function (start, end) {
             const queue = [[start]];
             const visited = new Set();
             const key = pos => `${pos.x},${pos.y}`;
@@ -653,9 +321,9 @@
                 }
                 const neighbors = [
                     { x: current.x, y: current.y - 1 },
-                    { x: current.x+1, y: current.y },
-                    { x: current.x, y: current.y+1 },
-                    { x: current.x-1, y: current.y }
+                    { x: current.x + 1, y: current.y },
+                    { x: current.x, y: current.y + 1 },
+                    { x: current.x - 1, y: current.y }
                 ];
                 for (const next of neighbors) {
                     if (next.x < 0 || next.x >= GRID_COLS || next.y < 0 || next.y >= GRID_ROWS) continue;
@@ -692,13 +360,13 @@
             // Find the hiding place coordinates from apt.json data
             const hidingSpotData = Array.from(hidingPlaces.entries())
                 .find(([name]) => name.toLowerCase() === hidingSpotName.toLowerCase());
-            
+
             if (!hidingSpotData || !hidingSpotData[1] || hidingSpotData[1].length === 0) return false;
 
             // Use the first cell of the hiding place as the target
             const targetCell = hidingSpotData[1][0];
             path = findPath(girlfriend.getCharacterPosition(), targetCell);
-            
+
             if (path.length > 0) {
                 girlfriend.hide(path);
                 return true;
@@ -728,8 +396,11 @@
             chatHistory.appendChild(messageDiv);
             chatHistory.scrollTop = chatHistory.scrollHeight;
 
-            // Store message in chat history
             chatMessages.push({ role, content });
+
+            if (role === "assistant" && localStorage.getItem("isSoundOn") !== "false") {
+                playMessageSound();
+            }
         }
 
         // Initialize Mistral API
@@ -742,19 +413,97 @@
         // Update Message function to use girlfriend instance
         function Message() {
             if (girlfriend) {
+                // Play message sound when sending a message
+                if (localStorage.getItem("isSoundOn") !== "false") {
+                    playMessageSound();
+                }
                 girlfriend.sendMessage();
             }
         }
 
         // Allow sending message with Enter
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('prompt').addEventListener('keypress', function(e) {
+            document.getElementById('prompt').addEventListener('keypress', function (e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     Message();
                 }
             });
+
+            try {
+                const bgMusic = document.getElementById("bgMusic");
+                bgMusic.currentTime = 10;
+                bgMusic.play().catch((error) => {
+                    console.log("Autoplay prevented:", error);
+                    isSoundOn = false;
+                    updateSoundIcon();
+                });
+            } catch (error) {
+                console.error("Error playing audio:", error);
+            }
         });
+
+        // Sound management code
+        let isSoundOn = localStorage.getItem("isSoundOn") === null ? true : localStorage.getItem("isSoundOn") !== "false";
+        const soundIcon = document.getElementById("soundIcon");
+        const bgMusic = document.getElementById("bgMusic");
+
+        // Make handleWalkingSound globally available
+        window.handleWalkingSound = function (isWalking) {
+            const walkingSound = document.getElementById("walkingSound");
+            if (!walkingSound) return;
+
+            if (isWalking && localStorage.getItem("isSoundOn") !== "false") {
+                walkingSound.currentTime = 0;
+                walkingSound.volume = 0.3;
+                walkingSound.play().catch((error) => {
+                    console.log("Could not play walking sound:", error);
+                });
+            } else {
+                walkingSound.pause();
+            }
+        }
+
+        // Update toggleSound to check girlfriend's movement status
+        function toggleSound() {
+            isSoundOn = !isSoundOn;
+            localStorage.setItem("isSoundOn", isSoundOn.toString());
+
+            if (isSoundOn) {
+                if (bgMusic.currentTime < 10) {
+                    bgMusic.currentTime = 10;
+                }
+                bgMusic.play();
+                // Check if girlfriend exists and is moving
+                if (girlfriend && girlfriend.isMoving) {
+                    handleWalkingSound(true);
+                }
+            } else {
+                bgMusic.pause();
+                handleWalkingSound(false);
+            }
+            updateSoundIcon();
+        }
+
+        function updateSoundIcon() {
+            soundIcon.src = isSoundOn ? "/static/assets/img/sondon.png" : "/static/assets/img/soundoff.png";
+        }
+
+        function playMessageSound() {
+            try {
+                const messageSound = document.getElementById("messageSound");
+                if (messageSound) {
+                    messageSound.currentTime = 0;
+                    messageSound.volume = 1.0;
+                    messageSound.play().catch((error) => {
+                        console.log("Could not play message sound:", error);
+                    });
+                }
+            } catch (error) {
+                console.error("Error playing message sound:", error);
+            }
+        }
     </script>
 </body>
-</html> 
+
+</html>
