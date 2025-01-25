@@ -1,3 +1,5 @@
+
+// Start of Selection
 function getFurniture() {
     return [
             {
@@ -14,11 +16,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "searchable",
-                        "img": "/assets/img/appartment/DresserSearchable.png"
+                        "img": "/assets/img/appartment/dressersearchable.png"
                     },
                     {
                         "for": "unsearchable",
-                        "img": "/assets/img/appartment/DresserUnsearchable.png"
+                        "img": "/assets/img/appartment/dresserunsearchable.png"
                     }
                 ]
             }, 
@@ -42,11 +44,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "locked",
-                        "img": "/assets/img/appartment/BedroomDoorLocked.png"
+                        "img": "/assets/img/appartment/bedroomdoorlocked.png"
                     },
                     {
                         "for": "unlocked",
-                        "img": "/assets/img/appartment/BedroomDoorUnlocked.png"
+                        "img": "/assets/img/appartment/bedroomdoorunlocked.png"
                     }
                 ]
             }, 
@@ -66,11 +68,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "usable",
-                        "img": "/assets/img/appartment/CoffeeTableUsable.png"
+                        "img": "/assets/img/appartment/coffeetableusable.png"
                     },
                     {
                         "for": "unusable",
-                        "img": "/assets/img/appartment/CoffeeTableUnusable.png"
+                        "img": "/assets/img/appartment/coffeetableunusable.png"
                     }
                 ]
             },
@@ -91,11 +93,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "used",
-                        "img": "/assets/img/appartment/TVUsed.png"
+                        "img": "/assets/img/appartment/tvused.png"
                     },
                     {
                         "for": "unused",
-                        "img": "/assets/img/appartment/TVUnused.png"
+                        "img": "/assets/img/appartment/tvunused.png"
                     }
                 ]
             },
@@ -115,15 +117,15 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "searchable",
-                        "img": "/assets/img/appartment/BookcaseSearchable.png"
+                        "img": "/assets/img/appartment/bookcasesearchable.png"
                     },
                     {
                         "for": "usable",
-                        "img": "/assets/img/appartment/BookcaseUsable.png"
+                        "img": "/assets/img/appartment/bookcaseusable.png"
                     },
                     {
                         "for": "unusable",
-                        "img": "/assets/img/appartment/BookcaseUnusuable.png"
+                        "img": "/assets/img/appartment/bookcaseunusuable.png"
                     }
                 ]
             },
@@ -140,11 +142,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "off",
-                        "img": "/assets/img/appartment/GeneratorOff.png"
+                        "img": "/assets/img/appartment/generatoroff.png"
                     },
                     {
                         "for": "on",
-                        "img": "/assets/img/appartment/GeneratorOn.png"
+                        "img": "/assets/img/appartment/generatoron.png"
                     }
                 ]
             },
@@ -163,11 +165,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "usable",
-                        "img": "/assets/img/appartment/DeadBodyUsable.png"
+                        "img": "/assets/img/appartment/deadbodyusable.png"
                     },
                     {
                         "for": "unusable",
-                        "img": "/assets/img/appartment/DeadBodyUnusable.png"
+                        "img": "/assets/img/appartment/deadbodyunusable.png"
                     }
                 ]
             },
@@ -185,11 +187,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "searchable",
-                        "img": "/assets/img/appartment/DeskSearchable.png"
+                        "img": "/assets/img/appartment/desksearchable.png"
                     },
                     {
                         "for": "unsearchable",
-                        "img": "/assets/img/appartment/DeskUnsearchable.png"
+                        "img": "/assets/img/appartment/deskunsearchable.png"
                     }
                 ]
             },
@@ -207,11 +209,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "searchable",
-                        "img": "/assets/img/appartment/CabinetSearchable.png"
+                        "img": "/assets/img/appartment/cabinetsearchable.png"
                     },
                     {
                         "for": "unsearchable",
-                        "img": "/assets/img/appartment/CabinetUnsearchable.png"
+                        "img": "/assets/img/appartment/cabinetunsearchable.png"
                     }
                 ]
             },
@@ -228,11 +230,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "searchable",
-                        "img": "/assets/img/appartment/FridgeSearchable.png"
+                        "img": "/assets/img/appartment/fridgesearchable.png"
                     },
                     {
                         "for": "unsearchable",
-                        "img": "/assets/img/appartment/FridgeUnsearchable.png"
+                        "img": "/assets/img/appartment/fridgeunsearchable.png"
                     }
                 ]
             },
@@ -250,11 +252,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "searchable",
-                        "img": "/assets/img/appartment/StoveSearchable.png"
+                        "img": "/assets/img/appartment/stovesearchable.png"
                     },
                     {
                         "for": "unsearchable",
-                        "img": "/assets/img/appartment/StoveUnsearchable.png"
+                        "img": "/assets/img/appartment/stoveunsearchable.png"
                     }
                 ]
             },{
@@ -275,11 +277,11 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "locked",
-                        "img": "/assets/img/appartment/StorageLocked.png"
+                        "img": "/assets/img/appartment/storagelocked.png"
                     },
                     {
                         "for": "unlocked",
-                        "img": "/assets/img/appartment/StorageUnlocked.png"
+                        "img": "/assets/img/appartment/storageunlocked.png"
                     }
                 ]
             },{
@@ -297,7 +299,7 @@ function getFurniture() {
                 "sprite": [
                     {
                         "for": "locked",
-                        "img": "/assets/img/appartment/TheExit.png"
+                        "img": "/assets/img/appartment/theexit.png"
                     }
                 ]
             }

@@ -23,9 +23,9 @@ let chatMessages = [];
 let furnitureSprites = {};
 
 function setup() {
-  baseMapImg = loadImage("/assets/img/appartment/BaseMap.PNG");
+  baseMapImg = loadImage("/assets/img/appartment/basemap.png");
   girlfriendImg = loadImage("/assets/img/gf.png");
-  clownImg = loadImage("/assets/img/clown.PNG");
+  clownImg = loadImage("/assets/img/clown.png");
 
   gameState = new GameState({
     ...getApt(),
