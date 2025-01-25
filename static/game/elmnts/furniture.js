@@ -3,13 +3,13 @@ function getFurniture() {
             {
                 "name": "Dresser",
                 "room": "My Bedroom",
-               
                 "pos": {
                     "x": 3,
                     "y": 17
                 },
                 "reward": "lockpick",
-                "state": "searchable",
+                "state": "unsearchable",
+                "in_use": false,
                 "search_msg":"Ok um, I think this is a lockpick 🔐. Why do you even have this?",
                 "sprite": [
                     {
@@ -36,6 +36,7 @@ function getFurniture() {
                 }
                 ,
                 "state": "locked",
+                "in_use": false,
                 "locked_message":"It's locked, I can't get out!! Why is it locked??",
                 "unlocked_message":"Ok it's open! 🥳",
                 "sprite": [
@@ -57,6 +58,7 @@ function getFurniture() {
                     "y": 21
                 },
                 "state": "unusable",
+                "in_use": false,
                 "key":"oil",
                 "reward":"remote",
                 "locked_msg":"Ugh the drawer doesn't open, it's like it's rusty or jammed or smthn. Gotta loosen it somehow",
@@ -80,6 +82,7 @@ function getFurniture() {
                     "y": 20
                 },
                 "state": "used",
+                "in_use": false,
                 "key":"remote",
                 "generator_on":false,
                 "locked_msg":"I need a remote to turn this on",
@@ -103,12 +106,17 @@ function getFurniture() {
                     "x": 28,
                     "y": 14
                 },
-                "state": "unusable",
+                "state": "searchable",
+                "in_use": true,
                 "key":"Desk Note",
                 "reward":"Flashlight",
                 "locked_msg":"There's like a shit ton of books in here in a bunch of different colors, i have no idea what i'm looking for... 😵‍💫",
                 "unlocked_msg":"Got the pink book. Looks like it's hollowed out and there's a flashlight inside 🔦. WEIRD?? there's also some writing here that says the mouth holds the key. omg that's so creepy wtf",
                 "sprite": [
+                    {
+                        "for": "searchable",
+                        "img": "/assets/img/appartment/BookcaseSearchable.PNG"
+                    },
                     {
                         "for": "usable",
                         "img": "/assets/img/appartment/BookcaseUsable.PNG"
@@ -128,6 +136,7 @@ function getFurniture() {
                     "y": 2
                 },
                 "state": "off",
+                "in_use": false,
                 "sprite": [
                     {
                         "for": "off",
@@ -147,6 +156,7 @@ function getFurniture() {
                     "y": 4
                 },
                 "state": "usable",
+                "in_use": true,
                 "key":"Knife",
                 "locked_msg":"um... what. the. fuck. IS THIS A DEAD BODY?? WHO ARE YOU??",
                 "unlocked_msg":"no no no no no ew ew ew ew whyyyyyyy...😭😭😭 theres a note here that says NEO. why the f was there a note in its mouth??",
@@ -170,6 +180,7 @@ function getFurniture() {
                 },
                 "reward": "Desk Note",
                 "state": "unsearchable",
+                "in_use": false,
                 "search_msg":"There's a note on your desk. It says The flamingo basks in light. what?? 🤔",
                 "sprite": [
                     {
@@ -190,6 +201,7 @@ function getFurniture() {
                     "y": 2
                 },
                 "state": "searchable",
+                "in_use": true,
                 "reward":"knife",
                 "search_msg":"Omg a knife 🔪... ill take it but there's no way i'm fighting that thing u can't make me ok?? ",
                 "sprite": [
@@ -211,6 +223,7 @@ function getFurniture() {
                     "y": 4
                 },
                 "state": "unsearchable",
+                "in_use": false,
                 "search_msg":"there's some creepy ouija shit on your fridge with the fridge magnets. They spell out VENES. is that something i should know about??",
                 "sprite": [
                     {
@@ -231,6 +244,7 @@ function getFurniture() {
                     "y": 3
                 },
                 "state": "unsearchable",
+                "in_use": false,
                 "search_msg":"U left some olive oil here on the stove for some reason... I feel like it might be useful for something... 🫕",
               
                 "sprite": [
@@ -255,6 +269,7 @@ function getFurniture() {
                     "y": 3
                 },
                 "state":"locked",
+                "in_use": false,
                 "locked_message":"No no no theres no way im going in there its dark as shit and its already fking scary out here ",
                 "unlocked_message":"Ok here goes...",
                 "sprite": [
@@ -265,6 +280,22 @@ function getFurniture() {
                     {
                         "for": "unlocked",
                         "img": "/assets/img/appartment/StorageUnlocked.PNG"
+                    }
+                ]
+            },{
+                "name":"Entrance",
+                "room":"Main Hallway",
+                "pos":{
+                    "x": 15,
+                    "y": 18
+                },
+                "state":"locked",
+                "locked_message":"I seem to need a key to get out of here",
+                "unlocked_message":"IM OUT, AND THIS RELATIONSHIP IS OVER",
+                "sprite": [
+                    {
+                        "for": "locked",
+                        "img": "/assets/img/appartment/TheExit.png"
                     }
                 ]
             }

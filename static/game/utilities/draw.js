@@ -130,7 +130,7 @@ function drawFurniture(furniture, sprites) {
     
     // Draw all labels second
     for (let item of furniture) {
-        if (item.pos) {
+        if (item.pos && item.in_use == true) {
             push();
             // Draw light gray background
             fill(220);
