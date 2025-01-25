@@ -16,7 +16,7 @@
               this.isHiding = false;
           }
 
-         
+          //getstresspropt
 
           getPrompt() {
               return `
@@ -26,7 +26,7 @@ You are a JSON girlfriend that is stuck in her boyfriends appartment with an evi
 Current state:
 - You (the girlfriend) are currently in this Room >> ${this.girlfriend.getCurrentRoom()}
 ${this.girlfriend.getIsHiding() ? `- You are currently hiding ${this.girlfriend.currentHidingSpot.hiding_type} the ${this.girlfriend.currentHidingSpot.name}` : ''}
-${this.girlfriend.getCurrentRoom() === this.clown.getCurrentRoom() ? '- OMG YOU ARE IN THE SAME ROOM AS THE CLOWNNNN!!!' : '- You have no idea where the clown is, you should hide if you can, if not leave the room'}
+${this.girlfriend.getCurrentRoom() === this.clown.getCurrentRoom() ? '- OMG YOU ARE IN THE SAME ROOM AS THE CLOWNNNN!!!' : '- You have no idea where the clown is, you will hide if you can, if not leave the room'}
 
 
 RESPONSE FORMAT:
@@ -74,6 +74,6 @@ Your text responses should be:
 --You are very scared but you are also kinds brave to be honest
 
 `;
-          }
+}
 
 }
