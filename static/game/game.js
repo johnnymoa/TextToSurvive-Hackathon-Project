@@ -23,29 +23,17 @@ function setup() {
         girlfriendImg = loadImage('/assets/img/gf.png');
         clownImg = loadImage('/assets/img/clown.png');
 
-        let data = getApt();
-        data.grid = getGrid();
+        gameState = new GameState({
+            ...getApt(),
+            grid: getGrid()
+        });
 
-        GRID_COLS = data.gridCols;
-        GRID_ROWS = data.gridRows;
-        grid = data.grid;
+        GRID_COLS = gameState.map_data.gridCols;
+        GRID_ROWS = gameState.map_data.gridRows;
 
-        for (let y = 0; y < GRID_ROWS; y++) {
-            for (let x = 0; x < GRID_COLS; x++) {
-                if (!grid[y]) grid[y] = [];
-                if (!grid[y][x]) {
-                    grid[y][x] = { type: 'empty', color: null };
-                } else if (typeof grid[y][x] === 'string') {
-                    grid[y][x] = { type: grid[y][x], color: null };
-                }
-            }
-        }
-
-
-        gameState = new GameState(data);
+       
         girlfriend = new Girlfriend(gameState, girlfriendImg);
         clown = new Clown(gameState, clownImg);
-
 
         // Once loaded, initialize the P5 canvas with correct dims
         let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
@@ -73,7 +61,3 @@ function draw() {
         clown.draw(CELL_SIZE);
     }
 }
-
-
-
-

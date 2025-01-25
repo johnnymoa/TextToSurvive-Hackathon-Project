@@ -98,7 +98,7 @@ class Character {
                 if (next.x < 0 || next.x >= GRID_COLS || next.y < 0 || next.y >= GRID_ROWS) continue;
                 if (visited.has(key(next))) continue;
 
-                const cell = grid[next.y][next.x];
+                const cell = this.gameState.map_data.grid[next.y][next.x];
                 if (cell.type === 'wall') continue;
 
                 visited.add(key(next));
