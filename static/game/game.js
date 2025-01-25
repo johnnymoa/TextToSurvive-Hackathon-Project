@@ -9,7 +9,10 @@ let baseMapImg;
 let girlfriendImg;
 let clownImg;
 
-let isSoundOn = localStorage.getItem("isSoundOn") === null ? true : localStorage.getItem("isSoundOn") !== "false";
+let isSoundOn =
+  localStorage.getItem("isSoundOn") === null
+    ? true
+    : localStorage.getItem("isSoundOn") !== "false";
 const soundIcon = document.getElementById("soundIcon");
 const bgMusic = document.getElementById("bgMusic");
 
@@ -20,51 +23,51 @@ let chatMessages = [];
 let furnitureSprites = {};
 
 function setup() {
-    baseMapImg = loadImage('/assets/img/appartment/baseMap.PNG');
-    girlfriendImg = loadImage('/assets/img/gf.png');
-    clownImg = loadImage('/assets/img/clown.png');
+  baseMapImg = loadImage("/assets/img/appartment/BaseMap.PNG");
+  girlfriendImg = loadImage("/assets/img/gf.png");
+  clownImg = loadImage("/assets/img/clown.png");
 
-    gameState = new GameState({
-        ...getApt(),
-        grid: getGrid(),
-        furniture:getFurniture()
-    });
+  gameState = new GameState({
+    ...getApt(),
+    grid: getGrid(),
+    furniture: getFurniture(),
+  });
 
-    furnitureSprites = loadFurnitureSprites(gameState.map_data.furniture);
+  furnitureSprites = loadFurnitureSprites(gameState.map_data.furniture);
 
-    GRID_COLS = gameState.map_data.gridCols;
-    GRID_ROWS = gameState.map_data.gridRows;
+  GRID_COLS = gameState.map_data.gridCols;
+  GRID_ROWS = gameState.map_data.gridRows;
 
-    girlfriend = new Girlfriend(gameState, girlfriendImg);
-    clown = new Clown(gameState, clownImg);
+  girlfriend = new Girlfriend(gameState, girlfriendImg);
+  clown = new Clown(gameState, clownImg);
 
-    // Once loaded, initialize the P5 canvas with correct dims
-    let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
-    canvas.parent('mapWrapper');
-    adjustScale();
+  // Once loaded, initialize the P5 canvas with correct dims
+  let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+  canvas.parent("mapWrapper");
+  adjustScale();
 }
 
 function draw() {
-    clear();
+  clear();
 
-    if (baseMapImg) {
-        image(baseMapImg, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
-    }
-    if(furnitureSprites) {
-        drawFurniture(gameState.map_data.furniture, furnitureSprites);
-    }
-    //drawGrid();
-    // drawWallsAndDoors();
+  if (baseMapImg) {
+    image(baseMapImg, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+  }
+  if (furnitureSprites) {
+    drawFurniture(gameState.map_data.furniture, furnitureSprites);
+  }
+  //drawGrid();
+  // drawWallsAndDoors();
 
-    drawLabels(gameState.map_data.rooms);
+  drawLabels(gameState.map_data.rooms);
 
-    if (girlfriend) {
-        girlfriend.drawPath(CELL_SIZE);
-        girlfriend.draw(CELL_SIZE);
-    }
-    if (clown) {
-        clown.checkForGirlfriend(girlfriend);
-        clown.drawPath(CELL_SIZE);
-        clown.draw(CELL_SIZE);
-    }
+  if (girlfriend) {
+    girlfriend.drawPath(CELL_SIZE);
+    girlfriend.draw(CELL_SIZE);
+  }
+  if (clown) {
+    clown.checkForGirlfriend(girlfriend);
+    clown.drawPath(CELL_SIZE);
+    clown.draw(CELL_SIZE);
+  }
 }
