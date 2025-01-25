@@ -3,6 +3,7 @@
   <head>
     <title>The Last Message - A text based horror game</title>
     <link rel="stylesheet" href="/static/assets/css/game-style.css" />
+    <link rel="stylesheet" href="/static/assets/css/stress-animations.css" />
     <link rel="stylesheet" href="/static/assets/css/popup.css" />
   </head>
 
@@ -43,7 +44,7 @@
           <div id="chatSection">
             <div id="chatHeader">
               <div class="profile-picture">
-                <!-- L'image sera ajoutée ici plus tard -->
+                <img src="/assets/img/profil_pictures/no_stress.webp" alt="Profile Picture">
               </div>
               <div class="chat-name">Bae 💖😘</div>
             </div>
@@ -130,6 +131,39 @@
           location.reload(); // Reload the page to restart the game
         });
       });
+
+      // Global function to set stress level
+      function setStressLevel(level) {
+        const chatSection = document.getElementById('chatSection');
+        const profilePicture = chatSection.querySelector('.profile-picture img');
+        
+        // Remove all existing stress classes
+        chatSection.classList.remove('no-stress', 'low-stress', 'very-stress');
+        
+        // Add the appropriate class based on stress level
+        switch(level) {
+          case 'no':
+            chatSection.classList.add('no-stress');
+            if (profilePicture) {
+              profilePicture.src = '/assets/img/profil_pictures/no_stress.webp';
+            }
+            break;
+          case 'low':
+            chatSection.classList.add('low-stress');
+            if (profilePicture) {
+              profilePicture.src = '/assets/img/profil_pictures/low_stress.webp';
+            }
+            break;
+          case 'very':
+            chatSection.classList.add('very-stress');
+            if (profilePicture) {
+              profilePicture.src = '/assets/img/profil_pictures/very_stress.webp';
+            }
+            break;
+          default:
+            console.error('Invalid stress level:', level);
+        }
+      }
     </script>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>

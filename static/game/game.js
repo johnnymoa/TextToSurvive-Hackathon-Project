@@ -61,6 +61,7 @@ async function initializeChat() {
 }
 
 async function setup() {
+  setStressLevel('no');
 
   baseMapImg = loadImage("/assets/img/appartment/basemap.png");
   girlfriendImg = loadImage("/assets/img/gf.png");

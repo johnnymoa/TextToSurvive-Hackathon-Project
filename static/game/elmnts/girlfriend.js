@@ -58,6 +58,16 @@ class Girlfriend extends Character {
     }
 
     updateStressLevel(stressChange) {
+
+        if (this.stressLevel <= 60) {
+            setStressLevel('no');
+        } else if (this.stressLevel > 40 && this.stressLevel <= 70) {
+            setStressLevel('low'); 
+        } else if (this.stressLevel > 70) {
+            setStressLevel('very');
+        }
+
+
         // Add or subtract the stress change while keeping within 0-100 range
         this.stressLevel = Math.max(
             0,

@@ -141,9 +141,7 @@
   border: 1px solid #ffffff;
 }
 
-#chatSection.very-stress .chat-name::before {
-  content: "Bae ";
-}
+
 
 #chatSection.very-stress .chat-name::after {
   content: "💀💀";
