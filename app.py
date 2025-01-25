@@ -1,43 +1,58 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import List
+from flask import Flask, request, jsonify, render_template, send_from_directory
+import requests
 import os
-from mistralai import Mistral
-from dotenv import load_dotenv
+from flask_cors import CORS
+import logging
 
-# Load environment variables
-load_dotenv()
-api_key = os.getenv("MISTRAL_API_KEY")
+app = Flask(__name__)
+CORS(app)  # Enable CORS for development
 
-# Initialize FastAPI app
-app = FastAPI()
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
-# Initialize Mistral client
-client = Mistral(api_key=api_key)
-
-class Message(BaseModel):
-    role: str
-    content: str
-
-class ChatRequest(BaseModel):
-    model: str
-    messages: List[Message]
-
-@app.post("/chat/complete")
-async def chat_complete(request: ChatRequest):
-    try:
-        response = client.chat.complete(
-            model=request.model,
-            messages=[{"role": msg.role, "content": msg.content} for msg in request.messages]
-        )
-        return {
-            "content": response.choices[0].message.content,
-            "finish_reason": response.choices[0].finish_reason
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+@app.route('/mistral-proxy', methods=['POST'])
+def proxy_to_mistral():
+    MISTRAL_API_KEY = os.getenv('MISTRAL_API_KEY')
+    MISTRAL_API_URL = "https://api.mistral.ai/v1/chat/completions"
     
+    if not MISTRAL_API_KEY:
+        logger.error("MISTRAL_API_KEY not configured")
+        return jsonify({"error": "MISTRAL_API_KEY not configured"}), 500
+    
+    headers = {
+        'Authorization': f'Bearer {MISTRAL_API_KEY}',
+        'Content-Type': 'application/json'
+    }
+    
+    try:
+        # Log incoming request (excluding sensitive data)
+        logger.info(f"Received request for Mistral API")
+        
+        response = requests.post(MISTRAL_API_URL, 
+                               headers=headers,
+                               json=request.json)
+        
+        # Check if the response was successful
+        response.raise_for_status()
+        
+        return jsonify(response.json())
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error calling Mistral API: {str(e)}")
+        return jsonify({"error": f"Error calling Mistral API: {str(e)}"}), 500
+    except Exception as e:
+        logger.error(f"Unexpected error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+# Serve static files
+@app.route('/')
+def index():
+    return send_from_directory('static', 'index.html')
+
+# Add this if you want to serve other static files
+@app.route('/<path:path>')
+def serve_static(path):
+    return send_from_directory('static', path)
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=7860) 
