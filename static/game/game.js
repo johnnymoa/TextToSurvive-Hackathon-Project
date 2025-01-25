@@ -25,7 +25,7 @@ let furnitureSprites = {};
 function setup() {
   baseMapImg = loadImage("/assets/img/appartment/BaseMap.PNG");
   girlfriendImg = loadImage("/assets/img/gf.png");
-  clownImg = loadImage("/assets/img/clown.png");
+  clownImg = loadImage("/assets/img/clown.PNG");
 
   gameState = new GameState({
     ...getApt(),
