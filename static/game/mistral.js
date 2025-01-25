@@ -1,6 +1,6 @@
 class MistralAPI {
   constructor() {
-    // No need for API key handling anymore
+   
   }
 
   async sendMessage(messages) {
@@ -12,7 +12,7 @@ class MistralAPI {
       body: JSON.stringify({
         model: "mistral-large-latest",
         messages: messages,
-        temperature: 0.7,
+        temperature: 0.5,
         top_p: 0.5,
         response_format: { type: "json_object" },
       }),

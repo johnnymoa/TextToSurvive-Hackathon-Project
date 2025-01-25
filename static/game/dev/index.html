@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Get Me Out! - Development Grid View</title>
+    <link rel="stylesheet" href="/static/assets/css/game-style.css" />
+    <style>
+        .dev-grid {
+            position: relative;
+        }
+        
+        .row-numbers {
+            position: absolute;
+            right: -30px;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: monospace;
+        }
+        
+        .col-numbers {
+            position: absolute;
+            top: -20px;
+            left: 0;
+            display: flex;
+            font-family: monospace;
+        }
+        
+        .row-number, .col-number {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: rgba(0,0,0,0.5);
+            font-size: 12px;
+        }
+
+        .grid-cell {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="led-bar">
+        <div class="light-beam"></div>
+    </div>
+    <div class="background-elements">
+        <img src="/static/assets/img/blood-2.png" alt="" class="blood blood-top-left" />
+        <img src="/static/assets/img/help.png" alt="" class="blood blood-top-right" />
+        <img src="/static/assets/img/splatter.png" alt="" class="blood splatter" />
+        <img src="/static/assets/img/hand.png" alt="" class="blood blood-bottom-right" />
+    </div>
+    <div id="gameContainer">
+        <div id="mapSection">
+            <div id="mapWrapper" class="map-wrapper dev-grid">
+                <!-- P5.js canvas goes here -->
+                <div class="row-numbers" id="rowNumbers"></div>
+                <div class="col-numbers" id="colNumbers"></div>
+                <div id="gridOverlay"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="sound-button" onclick="toggleSound()">
+        <img src="/static/assets/img/sondon.png" alt="Sound control" id="soundIcon" />
+    </div>
+
+    <audio id="bgMusic" loop>
+        <source src="/static/assets/sounds/music.mp3" type="audio/mp3" />
+    </audio>
+
+    <audio id="walkingSound" loop>
+        <source src="/static/assets/sounds/walking.mp3" type="audio/mp3" />
+    </audio>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.7.0/p5.min.js"></script>
+    <script src="/static/game/gameState.js"></script>
+    <script src="/static/game/mistral.js"></script>
+    <script src="/static/game/elmts/girlfriend.js"></script>
+    <script src="/static/game/elmts/clown.js"></script>
+    <script src="/static/game/helpers.js"></script>
+    <script src="/static/game/game.js"></script>
+    <script>
+        // Add grid numbers after the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add row numbers
+            const rowNumbers = document.getElementById('rowNumbers');
+            for (let i = 0; i < 20; i++) {
+                const rowNumber = document.createElement('div');
+                rowNumber.className = 'row-number';
+                rowNumber.textContent = i;
+                rowNumbers.appendChild(rowNumber);
+            }
+
+            // Add column numbers
+            const colNumbers = document.getElementById('colNumbers');
+            for (let i = 0; i < 32; i++) {
+                const colNumber = document.createElement('div');
+                colNumber.className = 'col-number';
+                colNumber.textContent = i;
+                colNumbers.appendChild(colNumber);
+            }
+
+            // Add grid overlay
+            const gridOverlay = document.getElementById('gridOverlay');
+            for (let y = 0; y < 20; y++) {
+                for (let x = 0; x < 32; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'grid-cell';
+                    cell.style.left = (x * 30) + 'px';
+                    cell.style.top = (y * 30) + 'px';
+                    gridOverlay.appendChild(cell);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html> 

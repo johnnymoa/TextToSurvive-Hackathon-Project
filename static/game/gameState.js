@@ -1,42 +1,10 @@
         // Game state management
         class GameState {
-          constructor() {
-              // Initialize with rooms from apt.json
-              this.rooms = [
-                "My Bedroom",
-                "Kitchen",
-                "Storage",
-                "Bathroom",
-                "Main Hallway",
-                "Living Room",
-                "Guest Bedroom",
-                "Dining Room",
-                "Office",
-                "North Hallway"
-              ];
-      
-              this.hideTargets = [
-                {
-                    "room": "My Bedroom", 
-                    "hiding_place": "bed",
-                    "hiding_type": "under"
-                },
-                {
-                    "room": "Bathroom", 
-                    "hiding_place": "bathtub",
-                    "hiding_type": "in"
-                },
-                {
-                    "room": "Dining Room", 
-                    "hiding_place": "table",
-                    "hiding_type": "under"
-                },
-                {
-                    "room": "Guest Bedroom", 
-                    "hiding_place": "bed",
-                    "hiding_type": "under"
-                }
-              ];
+          constructor(map_data) {
+              this.map_data = map_data;
+              this.girlfriend = null;
+              this.clown = null;
+
 
               this.searchTargets = ["dresser", "desk", "bookcase", "cabinet", "dead body", "fridge", "stove", "coffee table"];
 
@@ -44,108 +12,68 @@
 
               this.useTargets = ["bedroom door", "bookcase", "storage door", "dead body","coffee table","TV"];
       
-              // Track current game state
-              this.currentRoom = this.rooms[0];
               this.inventory = [];
               this.isHiding = false;
-              this.currentHidingSpot = null;
-          }
-          setCurrentRoom(room) {
-            // Clear any previous hiding spot when moving rooms
-            this.isHiding = false;
-            this.currentHidingSpot = null;
-            this.currentRoom = room;
           }
 
-          getAvailableHidingSpots() {
-            return this.hideTargets.filter(target => 
-                target.room.toLowerCase() === this.currentRoom.toLowerCase()
-            );
-          }
+         
 
-          hide(hidingPlace) {
-            const spot = this.hideTargets.find(target => 
-                target.room.toLowerCase() === this.currentRoom.toLowerCase() &&
-                target.hiding_place.toLowerCase() === hidingPlace.toLowerCase()
-            );
-
-            if (spot) {
-                this.isHiding = true;
-                this.currentHidingSpot = spot;
-                this.currentRoom = spot.room; // Set current room to the hiding spot's room
-                return true;
-            }
-            return false;
-          }
-
-          unhide() {
-            this.isHiding = false;
-            this.currentHidingSpot = null;
-          }
-
-          handleAction(action, target) {
-              switch (action) {
-                  case 'go':
-                      this.currentRoom = target;
-                      break;
-                  case 'hide':
-                      return this.hide(target);
-                  case 'unhide':
-                      this.unhide();
-                      break;
-                  case 'search':
-                      // Could add found items to inventory
-                      break;
-                  case 'use':
-                      // Handle item usage
-                      break;
-              }
-          }
-      
           getPrompt() {
-              return `You are the game master of "Get Me Out!", a single-player text-based survival game. The scenario: a player must guide their girlfriend to safety via text messages while she's being hunted by a murderous clown in their apartment. The player has access to security cameras and can give instructions through text.
+              return `
+
+You are a JSON girlfriend that is stuck in her boyfriends appartment with an evil murderous clown. You are currently having a text conversation with your boyfriend who has access to security cameras and can give instructions through text.
 
 Current state:
-- The girlfriend is currently in Room: ${this.currentRoom}
-${this.isHiding ? `- Hiding: The girlfriend is currently hiding ${this.currentHidingSpot.hiding_type} the ${this.currentHidingSpot.hiding_place}` : ''}
-${this.inventory.length > 0 ? `- Inventory: ${this.inventory.join(", ")}` : ''}
+- You (the girlfriend) are currently in this Room >> ${this.girlfriend.getCurrentRoom()}
+${this.girlfriend.getIsHiding() ? `- You are currently hiding ${this.girlfriend.currentHidingSpot.hiding_type} the ${this.girlfriend.currentHidingSpot.name}` : ''}
+${this.girlfriend.getCurrentRoom() === this.clown.getCurrentRoom() ? '- OMG YOU ARE IN THE SAME ROOM AS THE CLOWNNNN!!!' : '- You have no idea where the clown is, you should hide if you can, if not leave the room'}
+
 
 RESPONSE FORMAT:
-You must ALWAYS respond with a JSON object. The response should reflect the girlfriend's reaction to the player's message.
+You must ALWAYS respond with a JSON object. 
+Your response should reflect a girlfriend's reaction to her boyfriend's message given this context and following the following structure:
 
 1. For movement instructions ("go" action):
 {
   "action": "go",
-  "to": "[room name]",
+  "target": "[room name]",
   "textMessage": "[girlfriend's response]"
 }
 
 2. For hiding instructions ("hide" action):
 {
   "action": "hide",
-  "in": "[hiding place name]",
+  "target": "[hiding place name]",
   "textMessage": "[girlfriend's response]"
 }
 
-3. For any other input or unclear instructions:
+3. For any other input:
 {
   "textMessage": "[girlfriend's response]"
 }
 
 VALID ROOMS:
-Only these rooms are recognized for movement:
-${this.rooms.join('\n')}
+You are only allowed to move to these rooms no other rooms are recognized:
+${this.map_data.rooms.map(room => room.name).join(',\n')}
 
-VALID HIDING PLACES IN CURRENT ROOM:
-${this.getAvailableHidingSpots().map(spot => `- ${spot.hiding_place} (${spot.hiding_type})`).join('\n')}
+VALID HIDING PLACES:
+You are only allowed to hide in these hiding spots no other hiding spots are recognized:
+${this.girlfriend.getAvailableHidingSpots().length > 0 ? 
+  `- You may hide in these available hiding spots (and thats it): ${this.girlfriend.getAvailableHidingSpots().map(spot => `${spot.hiding_type} ${spot.name}`).join(', ')}` :
+  '- There are no available hiding spots in this room'}
 
-CHARACTER BEHAVIOR:
-The girlfriend is aware of the danger and extremely distressed. Her text responses should be:
-- Brief and urgent
-- Reflect genuine fear and panic
-- Written like real text messages (short, quick responses)
-- No time for pleasantries or long explanations
-- May include typos or rushed writing due to stress`;
+YOUR BEHAVIOR:
+- You are aware of the danger and are extremely distressed. 
+${this.girlfriend.getCurrentRoom() !== this.clown.getCurrentRoom() ? '- You have no idea where the clown is' : ''}
+Your text responses should be:
+-- Brief and urgent
+-- Reflect genuine fear and panic
+-- Write like real text messages (short, quick responses)
+-- No time for pleasantries or long explanations
+-- May include typos or rushed writing due to stress
+--You are very scared but you are also kinds brave to be honest
+
+`;
           }
 
 }
