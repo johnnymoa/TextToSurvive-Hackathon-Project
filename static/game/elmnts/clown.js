@@ -58,12 +58,15 @@ class Clown extends Character {
   }
 
   checkForGirlfriend(girlfriend) {
+    // First check if girlfriend exists and has a position
     if (
       !this.gameState.girlfriend ||
       !this.characterPos ||
-      this.gameState.girlfriend.isHiding
+      this.gameState.girlfriend.isHiding || // Check if girlfriend is hiding
+      this.gameState.girlfriend.getIsHiding() // Also check using the getter method
     ) {
       this.targetGirlfriend = null;
+      this.isChasing = false; // Stop chasing if was chasing before
       return;
     }
 
