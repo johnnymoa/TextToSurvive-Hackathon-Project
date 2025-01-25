@@ -18,17 +18,17 @@ const bgMusic = document.getElementById("bgMusic");
 const mistralAPI = new MistralAPI();
 let chatMessages = []; 
 
-async function loadAptJson() {
-        baseMapImg = loadImage('/assets/img/appartment/baseMap.PNG');
+function setup() {
+    baseMapImg = loadImage('/assets/img/appartment/baseMap.PNG');
         girlfriendImg = loadImage('/assets/img/gf.png');
         clownImg = loadImage('/assets/img/clown.png');
 
-        const response = await fetch('/static/game/apt.json');
-        const data = await response.json();
+        let data = getApt();
+        data.grid = getGrid();
 
-        GRID_COLS = data.gridCols || 40;
-        GRID_ROWS = data.gridRows || 20;
-        grid = data.grid || [];
+        GRID_COLS = data.gridCols;
+        GRID_ROWS = data.gridRows;
+        grid = data.grid;
 
         for (let y = 0; y < GRID_ROWS; y++) {
             for (let x = 0; x < GRID_COLS; x++) {
@@ -53,14 +53,8 @@ async function loadAptJson() {
         adjustScale();
 }
 
-function setup() {
-    loadAptJson();
-}
-
 function draw() {
-    if (!grid || grid.length === 0) {
-        return;
-    }
+    
     if (baseMapImg) {
         image(baseMapImg, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
     }
