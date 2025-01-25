@@ -36,3 +36,13 @@ docker run -p 7860:7860 -e ELEVENLABS_API_KEY=your_api_key elevenlabs-api
 
 docker run -p 8000:8000 p5js-game
 >>>>>>> a9f44a81570ec8b727680409f45cf384a773f26b
+
+Build with different difficulty levels:
+# Easy (3 digits)
+docker build --build-arg DIFFICULTY=1 -t game-easy .
+
+# Medium (4 digits)
+docker build --build-arg DIFFICULTY=2 -t game-medium .
+
+# Hard (5 digits)
+docker build --build-arg DIFFICULTY=3 -t game-hard .

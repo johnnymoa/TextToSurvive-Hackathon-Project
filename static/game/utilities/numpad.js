@@ -1,16 +1,48 @@
 
 class Numpad {
-    constructor(containerId, options = {}) {
-        this.container = document.getElementById(containerId);
-        this.options = {
-            code: options.code || '123',
-            onSuccess: options.onSuccess || (() => alert('Correct code!')),
-            onError: options.onError || (() => alert('Wrong code!'))
-        };
-        
-        this.currentCode = '';
-        this.init();
-    }
+    class Numpad {
+        constructor(containerId, options = {}) {
+            // Get difficulty from environment or default to 1
+            const difficulty = parseInt(process.env.GAME_DIFFICULTY) || 1;
+            
+            // Calculate code length based on difficulty (1=3 digits, 2=4 digits, 3=5 digits)
+            const codeLength = 2 + difficulty;
+            
+            this.container = document.getElementById(containerId);
+            this.options = {
+                // Generate random code of appropriate length
+                code: options.code || this.generateCode(codeLength),
+                onSuccess: options.onSuccess || (() => alert('Correct code!')),
+                onError: options.onError || (() => alert('Wrong code!'))
+            };
+            
+            this.currentCode = '';
+            this.maxLength = codeLength;
+            this.init();
+        }
+    
+        generateCode(length) {
+            let code = '';
+            for (let i = 0; i < length; i++) {
+                code += Math.floor(Math.random() * 10).toString();
+            }
+            return code;
+        }
+    
+        handleInput(number) {
+            if (this.currentCode.length < this.maxLength) {
+                this.currentCode += number;
+                this.updateDisplay();
+                
+                if (this.currentCode.length === this.maxLength) {
+                    this.checkCode();
+                }
+            }
+        }
+    
+        updateDisplay() {
+            this.display.textContent = this.currentCode.padEnd(this.maxLength, 'X');
+        }
 
     init() {
         // Create display
