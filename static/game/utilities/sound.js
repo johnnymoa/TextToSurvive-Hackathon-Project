@@ -1,20 +1,38 @@
-// Make handleWalkingSound globally available
-function handleWalkingSound (isWalking) {
-    const walkingSound = document.getElementById("walkingSound");
-    if (!walkingSound) return;
 
-    if (isWalking && localStorage.getItem("isSoundOn") !== "false") {
-        walkingSound.currentTime = 0;
-        walkingSound.volume = 0.3;
-        walkingSound.play().catch((error) => {
-            console.log("Could not play walking sound:", error);
-        });
-    } else {
-        walkingSound.pause();
+function playSound(sound) {
+    if (isSoundOn) {
+        let soundToPlay;
+        switch (sound) {
+            case 'clownSound1':
+                soundToPlay = clownSound1Snd;
+                break;
+            case 'clownSound2':
+                soundToPlay = clownSound2Snd;
+                break;
+            case 'clownSeesYou':
+                soundToPlay = clownSeesYouSnd;
+                break;
+            case 'gfMove':
+                soundToPlay = gfMoveSnd;
+                break;
+            case 'lose':
+                soundToPlay = loseSnd;
+                break;
+            case 'unlockDoor':
+                soundToPlay = unlockDoorSnd;
+                break;
+            case 'useKnife':
+                soundToPlay = useKnifeSnd;
+                break;
+        }
+        if (soundToPlay) {
+            soundToPlay.stop(); // Stop any existing playback
+            soundToPlay.loop(false); // Ensure looping is disabled
+            soundToPlay.play(); // Play the sound once
+        }
     }
 }
 
-// Update toggleSound to check girlfriend's movement status
 function toggleSound() {
     isSoundOn = !isSoundOn;
     localStorage.setItem("isSoundOn", isSoundOn.toString());
@@ -29,7 +47,6 @@ function toggleSound() {
         }
     } else {
         bgMusic.pause();
-        handleWalkingSound(false);
     }
     updateSoundIcon();
 }

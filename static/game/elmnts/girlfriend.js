@@ -9,6 +9,16 @@ class Girlfriend extends Character {
         this.stressLevel = 30;
         this.inventory = [];
         this.knows_about_dead_body = false;
+        this.independance_rate = 3000;
+        this.game_loops_before_deciding_for_herself = this.independance_rate;
+    }
+
+    update(){
+        this.game_loops_before_deciding_for_herself--;
+        if(this.game_loops_before_deciding_for_herself <= 0){
+            this.game_loops_before_deciding_for_herself = this.independance_rate;
+            strongIndependantWoman();
+        }
     }
 
     draw(CELL_SIZE) {
@@ -55,7 +65,10 @@ class Girlfriend extends Character {
         );
     }
 
-    handleAction(response) {
+    handleAction(response, called_by_chat = false) {
+        if(called_by_chat){
+            this.game_loops_before_deciding_for_herself = this.independance_rate;
+        }
         switch (response.action) {
             case "go":
                 this.moveToRoom(response.target);
@@ -151,6 +164,7 @@ class Girlfriend extends Character {
             if (!this.inventory || !this.inventory.includes("Key")) {
                 addProgramaticMessage(the_exit.locked_message);
             } else {
+                this.gameState.winGame();
                 addProgramaticMessage(the_exit.unlocked_message);
             }
         });
@@ -158,13 +172,13 @@ class Girlfriend extends Character {
 
     check(target) {
         if (target === "Bookcase") {
-            let bookcase = this.gameState.getBookcase();
+            let bookcase = this.gameState.map_data.furniture.find(item => item.name === "Bookcase");
             this.moveToPosition(bookcase.pos, () => {
                 addProgramaticMessage(bookcase.msg);
                 bookcase.state = "unusable";
             });
         } else if (target === "Cabinet") {
-            let cabinet = this.gameState.getCabinet();
+            let cabinet =this.gameState.map_data.furniture.find(item => item.name === "Cabinet");
             this.moveToPosition(cabinet.pos, () => {
                 addProgramaticMessage(cabinet.msg);
                 this.inventory.push("Knife");

@@ -4,38 +4,38 @@ class GameState {
     this.map_data = map_data;
     this.girlfriend = null;
     this.clown = null;
+    this.game_over = false;
+  }
+  endGame() {
+    this.game_over = true;
+    loseGameModal();
+  }
 
-    this.searchTargets = [
-      "dresser",
-      "desk",
-      "bookcase",
-      "cabinet",
-      "dead body",
-      "fridge",
-      "stove",
-      "coffee table",
-    ];
+  winGame() {
+    this.game_over = true;
+    unlockDoorSnd.play();
+    setTimeout(() => {
+      winGameModal();
+    }, 3000);
+    return;
+    winGame();
+  }
 
-    this.items = [
-      "lock pick",
-      "book note",
-      "flashlight",
-      "knife",
-      "oil",
-      "remote",
-    ];
+  update() {
+    this.girlfriend.update();
+    if (this.clown && this.girlfriend) {
+      const clownPos = this.clown.getCharacterPosition();
+      const gfPos = this.girlfriend.getCharacterPosition();
 
-    this.useTargets = [
-      "bedroom door",
-      "bookcase",
-      "storage door",
-      "dead body",
-      "coffee table",
-      "TV",
-    ];
-
-    this.inventory = [];
-    this.isHiding = false;
+      if (
+        clownPos &&
+        gfPos &&
+        clownPos.x === gfPos.x &&
+        clownPos.y === gfPos.y
+      ) {
+        this.endGame();
+      }
+    }
   }
 
   getTheExit() {
@@ -44,11 +44,6 @@ class GameState {
     );
   }
 
-  getStorage() {
-    return this.map_data.furniture.find(
-      (furniture) => furniture.name === "Storage"
-    );
-  }
 
   getStressPrompt() {
     const currentStress = this.girlfriend ? this.girlfriend.stressLevel : 50; // Default to 50 if girlfriend not initialized
@@ -100,6 +95,7 @@ Examples:
   }
 `;
   }
+
   getPrompt() {
     return `
 
@@ -108,24 +104,21 @@ You are a JSON girlfriend that is stuck in her boyfriends appartment with an evi
 Current state:
 - You (the girlfriend) are currently in this Room >> ${this.girlfriend.getCurrentRoom()}
 - Your current stress level is ${this.girlfriend.stressLevel}/100
-${
-  this.girlfriend.getIsHiding()
-    ? `- You are currently hiding ${this.girlfriend.currentHidingSpot.hiding_type} the ${this.girlfriend.currentHidingSpot.name}`
-    : ""
-}
-${
-  this.girlfriend.getCurrentRoom() === this.clown.getCurrentRoom()
-    ? "- OMG YOU ARE IN THE SAME ROOM AS THE CLOWNNNN!!!"
-    : "- You have no idea where the clown is, you will hide if you can, if not leave the room"
-}
+${this.girlfriend.getIsHiding()
+        ? `- You are currently hiding ${this.girlfriend.currentHidingSpot.hiding_type} the ${this.girlfriend.currentHidingSpot.name}`
+        : ""
+      }
+${this.girlfriend.getCurrentRoom() === this.clown.getCurrentRoom()
+        ? "- OMG YOU ARE IN THE SAME ROOM AS THE CLOWNNNN!!!"
+        : "- You have no idea where the clown is, you will hide if you can, if not leave the room"
+      }
 
-${
-  this.girlfriend.getInventory().length > 0
-    ? `- You have the following items in your inventory: ${this.girlfriend
-        .getInventory()
-        .join(", ")}`
-    : ""
-}
+${this.girlfriend.getInventory().length > 0
+        ? `- You have the following items in your inventory: ${this.girlfriend
+          .getInventory()
+          .join(", ")}`
+        : ""
+      }
 RESPONSE FORMAT:
 You must ALWAYS respond with a JSON object. 
 Your response should reflect a girlfriend's reaction to her boyfriend's message given this context and following the following structure:
@@ -150,31 +143,29 @@ For hiding instructions ("hide" action):
 }
 VALID HIDING PLACES:
 You are only allowed to hide in these hiding spots no other hiding spots are recognized:
-${
-  this.girlfriend.getAvailableHidingSpots().length > 0
-    ? `- You may hide in these available hiding spots (and thats it): ${this.girlfriend
-        .getAvailableHidingSpots()
-        .map((spot) => `[${spot.hiding_type} ${spot.name}]`)
-        .join(", ")}`
-    : "- There are no available hiding spots in this room"
-}
+${this.girlfriend.getAvailableHidingSpots().length > 0
+        ? `- You may hide in these available hiding spots (and thats it): ${this.girlfriend
+          .getAvailableHidingSpots()
+          .map((spot) => `[${spot.hiding_type} ${spot.name}]`)
+          .join(", ")}`
+        : "- There are no available hiding spots in this room"
+      }
 
 
 For checking/inquiring/going to apecifically the Cabinet or Bookcase instructions ("check" action):
 {
   "action": "check",
-  "target": "she can only check \"Cabinet\" (this is in the kitchen, you can ask if youre not sure) or \"Bookcase\" (this is in  the guest bedroom   you can ask if youre not sure).${
-    this.girlfriend.getKnowsAboutDeadBody()
-      ? ' or "Dead Body" (in the Storage room)'
-      : "you might be asked to check other things be open minded about it ask where, be freaked out if nncecessarry"
-  } 
+  "target": "she can only check \"Cabinet\" (this is in the kitchen, you can ask if youre not sure) or \"Bookcase\" (this is in  the guest bedroom   you can ask if youre not sure).${this.girlfriend.getKnowsAboutDeadBody()
+        ? ' or "Dead Body" (in the Storage room)'
+        : "you might be asked to check other things be open minded about it ask where, be freaked out if nncecessarry"
+      } 
   "textMessage": "[girlfriend's response]"
 }
 
 For exiting the house by the exit in the mainhallway instructions ("exit" action):
 {
   "action": "exit",
-  "target": "The Exit",
+  "target": "The Exit", (the exit is in the main hallway by the way you cal also inted to exit it directly)
   "textMessage": "[girlfriend's response]"
 }
 
@@ -188,11 +179,10 @@ For any other input:
 
 YOUR BEHAVIOR:
 - You are aware of the danger and are extremely distressed. 
-${
-  this.girlfriend.getCurrentRoom() !== this.clown.getCurrentRoom()
-    ? "- You have no idea where the clown is"
-    : ""
-}
+${this.girlfriend.getCurrentRoom() !== this.clown.getCurrentRoom()
+        ? "- You have no idea where the clown is"
+        : ""
+      }
 Your text responses should be:
 -- Brief and urgent
 -- Reflect genuine fear and panic

@@ -24,6 +24,8 @@ class Clown extends Character {
 
     this.behaviorInterval = setInterval(() => {
       this.decideBehavior();
+     // playSound(Math.random() < 0.5 ? 'clownSound1' : 'clownSound2');
+
     }, 3000);
   }
 

@@ -9,6 +9,17 @@ let baseMapImg;
 let girlfriendImg;
 let clownImg;
 
+let clownSound1Snd;
+let clownSound2Snd;
+let clownSeesYouSnd;
+let gfMoveSnd;
+let loseSnd;
+let unlockDoorSnd;
+let useKnifeSnd;
+
+
+
+
 let isSoundOn =
   localStorage.getItem("isSoundOn") === null
     ? true
@@ -22,7 +33,35 @@ let chatMessages = [];
 
 let furnitureSprites = {};
 
-function setup() {
+function preload() {
+  clownSound1Snd = loadSound('/assets/sounds/clownmove1.mp3');
+  clownSound2Snd = loadSound('/assets/sounds/clownmove2.mp3');
+  clownSeesYouSnd = loadSound('/assets/sounds/clownseesyou.mp3');
+  gfMoveSnd = loadSound('/assets/sounds/gfmove.mp3');
+  loseSnd = loadSound('/assets/sounds/lose.mp3');
+  unlockDoorSnd = loadSound('/assets/sounds/unlockdoor.mp3');
+  useKnifeSnd = loadSound('/assets/sounds/useknife.mp3');
+}
+
+async function initializeChat() {
+  const firstPrompt = gameState.getFirstPrompt();
+  const messages = [
+    {
+      role: "system",
+      content: firstPrompt,
+    },
+  ];
+  try {
+    const response = await mistralAPI.sendMessage(messages);
+    const jsonResponse = JSON.parse(response);
+    addMessageToChat("assistant", jsonResponse.textMessage);
+  } catch (error) {
+    console.error("Error getting initial message:", error);
+  }
+}
+
+async function setup() {
+
   baseMapImg = loadImage("/assets/img/appartment/basemap.png");
   girlfriendImg = loadImage("/assets/img/gf.png");
   clownImg = loadImage("/assets/img/clown.png");
@@ -45,6 +84,8 @@ function setup() {
   let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
   canvas.parent("mapWrapper");
   adjustScale();
+  
+  await initializeChat();
 }
 
 function draw() {
@@ -64,12 +105,18 @@ function draw() {
 
 
   if (girlfriend) {
-    girlfriend.drawPath(CELL_SIZE);
+    //girlfriend.drawPath(CELL_SIZE);
     girlfriend.draw(CELL_SIZE);
   }
   if (clown) {
     clown.checkForGirlfriend(girlfriend);
-    clown.drawPath(CELL_SIZE);
+    //clown.drawPath(CELL_SIZE);
     clown.draw(CELL_SIZE);
+  }
+
+  gameState.update();
+
+  if (gameState.game_over) {
+    noLoop();
   }
 }

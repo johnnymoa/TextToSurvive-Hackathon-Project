@@ -157,7 +157,7 @@ function getFurniture() {
                 "state": "usable",
                 "in_use": true,
                 "key":"Knife",
-                "locked_msg":"Um... what. the. f. Why is its mouth stitched up? Is the key inside??? i cant open it",
+                "locked_msg":"Um... what. the. f. Why is its mouth stitched up? Is the key inside??? i cant open it, should i look for something to open it with?",
                 "unlocked_msg":"No no no ew ew i can't believe im doing this...😭😭😭 ....the key was in here i got it!! I can get out!",
                 "sprite": [
                     {
