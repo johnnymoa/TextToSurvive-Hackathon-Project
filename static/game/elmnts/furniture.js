@@ -110,10 +110,7 @@ function getFurniture() {
                 },
                 "state": "searchable",
                 "in_use": true,
-                "key":"Desk Note",
-                "reward":"Flashlight",
-                "locked_msg":"There's like a shit ton of books in here in a bunch of different colors, i have no idea what i'm looking for... 😵‍💫",
-                "unlocked_msg":"Got the pink book. Looks like it's hollowed out and there's a flashlight inside 🔦. WEIRD?? there's also some writing here that says the mouth holds the key. omg that's so creepy wtf",
+                "msg":"There's nothing useful in here...",
                 "sprite": [
                     {
                         "for": "searchable",
@@ -137,7 +134,7 @@ function getFurniture() {
                     "x": 3,
                     "y": 2
                 },
-                "state": "off",
+                "state": "on",
                 "in_use": false,
                 "sprite": [
                     {
@@ -160,8 +157,8 @@ function getFurniture() {
                 "state": "usable",
                 "in_use": true,
                 "key":"Knife",
-                "locked_msg":"um... what. the. fuck. IS THIS A DEAD BODY?? WHO ARE YOU??",
-                "unlocked_msg":"no no no no no ew ew ew ew whyyyyyyy...😭😭😭 theres a note here that says NEO. why the f was there a note in its mouth??",
+                "locked_msg":"Um... what. the. f. Why is its mouth stitched up? Is the key inside??? i cant open it",
+                "unlocked_msg":"No no no ew ew i can't believe im doing this...😭😭😭 ....the key was in here i got it!! I can get out!",
                 "sprite": [
                     {
                         "for": "usable",
@@ -205,7 +202,7 @@ function getFurniture() {
                 "state": "searchable",
                 "in_use": true,
                 "reward":"knife",
-                "search_msg":"Omg a knife 🔪... ill take it but there's no way i'm fighting that thing u can't make me ok?? ",
+                "msg":"Omg a knife 🔪... i just took it but there's no way i can kill the creature with this.",
                 "sprite": [
                     {
                         "for": "searchable",
@@ -259,32 +256,8 @@ function getFurniture() {
                         "img": "/assets/img/appartment/stoveunsearchable.png"
                     }
                 ]
-            },{
-                "name":"Storage Shade",
-                "room":"Storage",
-                "wall_pos": {
-                    "x": 6,
-                    "y": 3
-                },
-                "stop_pos":{
-                    "x": 7,
-                    "y": 3
-                },
-                "state":"locked",
-                "in_use": false,
-                "locked_message":"No no no theres no way im going in there its dark as shit and its already fking scary out here ",
-                "unlocked_message":"Ok here goes...",
-                "sprite": [
-                    {
-                        "for": "locked",
-                        "img": "/assets/img/appartment/storagelocked.png"
-                    },
-                    {
-                        "for": "unlocked",
-                        "img": "/assets/img/appartment/storageunlocked.png"
-                    }
-                ]
-            },{
+            }
+              ,{
                 "name":"The Exit",
                 "room":"Main Hallway",
                 "in_use": true,

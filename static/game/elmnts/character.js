@@ -15,6 +15,10 @@ class Character {
         return this.characterPos;
     }
 
+    moving_check() {
+
+    }
+
     setCharacterPosition(pos) {
         this.characterPos = pos;
     }
@@ -72,6 +76,7 @@ class Character {
             this.previousPos = { ...this.characterPos };
             const nextPos = this.path.shift();
             this.characterPos = nextPos;
+            this.moving_check();
         }, this.speed);
     }
 

@@ -61,7 +61,6 @@ function draw() {
 
     drawLabels(gameState.map_data.rooms);
 
-    drawStorage() 
 
 
   if (girlfriend) {

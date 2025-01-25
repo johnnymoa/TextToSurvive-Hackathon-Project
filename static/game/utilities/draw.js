@@ -30,24 +30,7 @@ function drawLabels(rooms) {
         // Draw room label
         textAlign(CENTER, CENTER);
         textSize(14);
-        
-        if (room.name === 'Storage') {
-            // For Storage room, add white background
-            const labelWidth = textWidth(room.name);
-            const labelHeight = textAscent() + textDescent();
-            push();
-            rectMode(CENTER);
-            fill(255); // White background
-            noStroke();
-            rect(
-                room.label_position.x * CELL_SIZE + CELL_SIZE / 2,
-                room.label_position.y * CELL_SIZE + CELL_SIZE / 2,
-                labelWidth,
-                labelHeight
-            );
-            pop();
-        }
-        
+
         fill(0);
         text(
             room.name,
@@ -72,14 +55,14 @@ function drawLabels(rooms) {
 
             // Measure exactly the text size (no extra padding)
             const labelWidth = textWidth(hidingSpot.name);
-            const labelHeight = textAscent() ;
+            const labelHeight = textAscent();
 
             // Draw a centered background rectangle 
             // that's just as wide/tall as the text
             rectMode(CENTER);
             fill('#f1c94f');
             noStroke();
-            rect(x, y, labelWidth, labelHeight/2, 2);
+            rect(x, y, labelWidth, labelHeight / 2, 2);
             pop();
 
             // Draw the text on top
@@ -148,7 +131,7 @@ function drawFurniture(furniture, sprites) {
     
     // Draw all labels second
     for (let item of furniture) {
-        if (item.pos && item.in_use == true && item.name !== "Storage") {
+        if (item.pos && item.in_use == true) {
             push();
             // Draw light gray background
             fill(220);
@@ -168,26 +151,3 @@ function drawFurniture(furniture, sprites) {
     }
 }
 
-function drawStorage() {
-   let storage = gameState.getStorage();
-    if (storage && storage.pos && storage.in_use == true) {
-        push();
-        // Draw light gray background
-        fill(220);
-        noStroke();
-        const padding = 4;
-        const textWidth = textSize() * storage.name.length * 0.6;
-        rectMode(CENTER);
-        rect((storage.pos.x + 0.5) * CELL_SIZE, (storage.pos.y + 0.5) * CELL_SIZE, textWidth, 20);
-        
-        // Draw black text
-        fill(0);
-        textAlign(CENTER, CENTER);
-        textSize(12);
-        text(storage.name, (storage.pos.x + 0.5) * CELL_SIZE, (storage.pos.y + 0.5) * CELL_SIZE);
-
-        // Draw second "Storage" text on top
-        text(storage.name, (storage.pos.x + 0.5) * CELL_SIZE, (storage.pos.y + 0.5) * CELL_SIZE - 20);
-        pop();
-    }
-}
