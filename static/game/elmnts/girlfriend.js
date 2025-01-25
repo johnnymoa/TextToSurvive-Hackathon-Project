@@ -81,6 +81,7 @@ class Girlfriend extends Character {
         }
         switch (response.action) {
             case "go":
+                playSound('gfMove');
                 this.moveToRoom(response.target);
                 break;
             case "hide":
@@ -199,6 +200,7 @@ class Girlfriend extends Character {
             this.moveToPosition(deadBody.pos, () => {
 
                 if (this.inventory.includes("Knife")) {
+                    playSound('useKnife');
                     addProgramaticMessage("No no no ew ew i can't believe im doing this...😭😭😭 ....the key was in here i got it!! I can get out!");
                     deadBody.state = "unusable";
                     this.inventory.push("Key");

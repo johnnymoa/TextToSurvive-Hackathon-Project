@@ -16,6 +16,7 @@ let gfMoveSnd;
 let loseSnd;
 let unlockDoorSnd;
 let useKnifeSnd;
+let messageSnd;
 
 
 
@@ -41,6 +42,7 @@ function preload() {
   loseSnd = loadSound('/assets/sounds/lose.mp3');
   unlockDoorSnd = loadSound('/assets/sounds/unlockdoor.mp3');
   useKnifeSnd = loadSound('/assets/sounds/useknife.mp3');
+  messageSnd = loadSound('/assets/sounds/message.wav');
 }
 
 async function initializeChat() {

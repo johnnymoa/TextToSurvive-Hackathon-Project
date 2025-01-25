@@ -1,7 +1,8 @@
-
 function playSound(sound) {
     if (isSoundOn) {
         let soundToPlay;
+
+        // Determine which sound to play
         switch (sound) {
             case 'clownSound1':
                 soundToPlay = clownSound1Snd;
@@ -24,14 +25,25 @@ function playSound(sound) {
             case 'useKnife':
                 soundToPlay = useKnifeSnd;
                 break;
+            case 'message':
+                soundToPlay = messageSnd;
         }
-        if (soundToPlay) {
-            soundToPlay.stop(); // Stop any existing playback
-            soundToPlay.loop(false); // Ensure looping is disabled
+
+        // Play the sound if it's defined and loaded
+        if (soundToPlay && soundToPlay.isLoaded()) {
+            soundToPlay.setLoop(false); // Ensure looping is disabled
+            soundToPlay.playMode('restart'); // Set play mode to 'restart'
+            if (soundToPlay.isPlaying()) {
+                soundToPlay.stop(); // Stop any existing playback
+            }
             soundToPlay.play(); // Play the sound once
+        } else {
+            console.log('Sound file is not loaded or undefined.');
         }
     }
 }
+
+
 
 function toggleSound() {
     isSoundOn = !isSoundOn;
@@ -42,9 +54,7 @@ function toggleSound() {
             bgMusic.currentTime = 10;
         }
         bgMusic.play();
-        if (girlfriend && girlfriend.isMoving) {
-            handleWalkingSound(true);
-        }
+       
     } else {
         bgMusic.pause();
     }

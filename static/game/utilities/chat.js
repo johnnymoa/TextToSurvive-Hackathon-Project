@@ -129,27 +129,17 @@ function addMessageToChat(role, content) {
   chatMessages.push({ role, content });
 
   if (role === "assistant" && localStorage.getItem("isSoundOn") !== "false") {
-    playMessageSound();
+    playSound('message');
   }
 }
 
-// Update Message function to use girlfriend instance
-function Message() {
-  if (girlfriend) {
-    // Play message sound when sending a message
-    if (localStorage.getItem("isSoundOn") !== "false") {
-      playMessageSound();
-    }
-    sendMessage();
-  }
-}
 
 // Allow sending message with Enter
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("prompt").addEventListener("keypress", function (e) {
     if (e.key === "Enter") {
       e.preventDefault();
-      Message();
+      sendMessage();
     }
   });
 
@@ -157,11 +147,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const bgMusic = document.getElementById("bgMusic");
     bgMusic.currentTime = 10;
     bgMusic.play().catch((error) => {
-      console.log("Autoplay prevented:", error);
       isSoundOn = false;
       updateSoundIcon();
     });
   } catch (error) {
-    console.error("Error playing audio:", error);
   }
 });

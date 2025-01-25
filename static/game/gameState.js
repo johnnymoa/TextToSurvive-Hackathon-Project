@@ -7,18 +7,18 @@ class GameState {
     this.game_over = false;
   }
   endGame() {
+    playSound('lose');
     this.game_over = true;
     loseGameModal();
   }
 
   winGame() {
     this.game_over = true;
-    unlockDoorSnd.play();
+    playSound('unlockDoor');
     setTimeout(() => {
       winGameModal();
     }, 3000);
     return;
-    winGame();
   }
 
   update() {

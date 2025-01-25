@@ -24,9 +24,9 @@ class Clown extends Character {
 
     this.behaviorInterval = setInterval(() => {
       this.decideBehavior();
-     // playSound(Math.random() < 0.5 ? 'clownSound1' : 'clownSound2');
+     playSound(Math.random() < 0.5 ? 'clownSound1' : 'clownSound2');
 
-    }, 3000);
+    }, 6000);
   }
 
   decideBehavior() {
@@ -91,6 +91,7 @@ class Clown extends Character {
           this.path = this.findPath(this.characterPos, girlfriendPos);
           if (this.path.length > 0) {
             this.isChasing = true;
+            playSound('clownSeesYou');
             this.moveCharacterAlongPath();
           }
         }
