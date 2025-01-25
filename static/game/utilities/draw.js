@@ -28,9 +28,27 @@ function drawLabels(rooms) {
         rect(room.start_col * CELL_SIZE, room.start_row * CELL_SIZE, width, height);
 
         // Draw room label
-        fill(0);
         textAlign(CENTER, CENTER);
         textSize(14);
+        
+        if (room.name === 'Storage') {
+            // For Storage room, add white background
+            const labelWidth = textWidth(room.name);
+            const labelHeight = textAscent() + textDescent();
+            push();
+            rectMode(CENTER);
+            fill(255); // White background
+            noStroke();
+            rect(
+                room.label_position.x * CELL_SIZE + CELL_SIZE / 2,
+                room.label_position.y * CELL_SIZE + CELL_SIZE / 2,
+                labelWidth,
+                labelHeight
+            );
+            pop();
+        }
+        
+        fill(0);
         text(
             room.name,
             room.label_position.x * CELL_SIZE + CELL_SIZE / 2,
@@ -54,14 +72,14 @@ function drawLabels(rooms) {
 
             // Measure exactly the text size (no extra padding)
             const labelWidth = textWidth(hidingSpot.name);
-            const labelHeight = textAscent() + textDescent();
+            const labelHeight = textAscent() ;
 
             // Draw a centered background rectangle 
             // that's just as wide/tall as the text
             rectMode(CENTER);
             fill('#f1c94f');
             noStroke();
-            rect(x, y, labelWidth, labelHeight / 2, 2);
+            rect(x, y, labelWidth, labelHeight/2, 2);
             pop();
 
             // Draw the text on top
@@ -108,7 +126,6 @@ function drawWallsAndDoors() {
 }
 
 function loadFurnitureSprites(furniture) {
-    console.log(furniture);
     const sprites = [];
     for (let i = 0; i < furniture.length; i++) {
         for (let j = 0; j < furniture[i].sprite.length; j++) {
@@ -119,6 +136,7 @@ function loadFurnitureSprites(furniture) {
     }
     return sprites;
 }
+
 function drawFurniture(furniture, sprites) {
     // Draw all sprites first
     for (let item of furniture) {
@@ -148,4 +166,9 @@ function drawFurniture(furniture, sprites) {
             pop();
         }
     }
+}
+
+function drawStorage(storage) {
+   let storage = gameState.getStorage();
+   
 }

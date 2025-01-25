@@ -38,8 +38,12 @@ class GameState {
     this.isHiding = false;
   }
 
-  getExit() {
+  getTheExit() {
     return this.map_data.furniture.find(furniture => furniture.name === "The Exit");
+  }
+
+  getStorage() {
+    return this.map_data.furniture.find(furniture => furniture.name === "Storage");
   }
 
   getStressPrompt() {

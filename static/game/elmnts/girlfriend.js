@@ -121,7 +121,7 @@ class Girlfriend extends Character {
           .trim()
           .includes(spot.name.toLowerCase().trim())
     );
-    console.log(hidingSpot);
+
     if (!hidingSpot) return;
 
     // Move to the hiding spot position
@@ -131,10 +131,15 @@ class Girlfriend extends Character {
   }
 
   exit() {
-    this.moveToPosition({"x": 14,"y": 19}, () => {
+    let the_exit = this.gameState.getTheExit();
+    let x = the_exit.pos.x;
+    let y = the_exit.pos.y-1;
+    let pos = {"x": x, "y": y};
+    this.moveToPosition(pos, () => {
       if (!this.inventory || !this.inventory.includes("Key")) {
-        // Cannot exit without key
-        return;
+        addProgramaticMessage(the_exit.locked_message);
+      } else  {
+        addProgramaticMessage(the_exit.unlocked_message);
       }
       });
   }
