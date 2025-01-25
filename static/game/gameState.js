@@ -39,17 +39,16 @@ class GameState {
   }
 
   getTheExit() {
-    return this.map_data.furniture.find(furniture => furniture.name === "The Exit");
+    return this.map_data.furniture.find(
+      (furniture) => furniture.name === "The Exit"
+    );
   }
 
-  getCabinet() {
-    return this.map_data.furniture.find(furniture => furniture.name === "Cabinet");
+  getStorage() {
+    return this.map_data.furniture.find(
+      (furniture) => furniture.name === "Storage"
+    );
   }
-
-  getBookcase() {
-    return this.map_data.furniture.find(furniture => furniture.name === "Bookcase");
-  }
-
 
   getStressPrompt() {
     const currentStress = this.girlfriend ? this.girlfriend.stressLevel : 50; // Default to 50 if girlfriend not initialized
@@ -74,7 +73,7 @@ Examples:
 "Let's think about this calmly" -> {"stressChange": -40}`;
   }
 
-  getFirstPromt() {
+  getFirstPrompt() {
     return `
    You are a JSON girlfriend that is stuck in her boyfriends appartment with an evil murderous clown. You are currently having a text conversation with your boyfriend who has access to security cameras and can give instructions through text.
   You are texting your boyfriend a text message to let him know you are in danger and that you absolutely need help.
@@ -94,6 +93,11 @@ Examples:
   -- May include typos or rushed writing due to stress
   --You are very scared but you are also super brave to be honest
   --Don't name your partner
+
+  EXAMPLE RESPONSE:
+  {
+    "textMessage": "hi babe I think there's someone... or something... in the house, I'm so scared. Help me please!!!!"
+  }
 `;
   }
   getPrompt() {
@@ -115,7 +119,13 @@ ${
     : "- You have no idea where the clown is, you will hide if you can, if not leave the room"
 }
 
-${this.girlfriend.getInventory().length > 0 ? `- You have the following items in your inventory: ${this.girlfriend.getInventory().join(", ")}` : ""}
+${
+  this.girlfriend.getInventory().length > 0
+    ? `- You have the following items in your inventory: ${this.girlfriend
+        .getInventory()
+        .join(", ")}`
+    : ""
+}
 RESPONSE FORMAT:
 You must ALWAYS respond with a JSON object. 
 Your response should reflect a girlfriend's reaction to her boyfriend's message given this context and following the following structure:
@@ -153,7 +163,11 @@ ${
 For checking/inquiring/going to apecifically the Cabinet or Bookcase instructions ("check" action):
 {
   "action": "check",
-  "target": "she can only check \"Cabinet\" (this is in the kitchen, you can ask if youre not sure) or \"Bookcase\" (this is in  the guest bedroom   you can ask if youre not sure).${this.girlfriend.getKnowsAboutDeadBody() ? " or \"Dead Body\" (in the Storage room)" : "you might be asked to check other things be open minded about it ask where, be freaked out if nncecessarry"} 
+  "target": "she can only check \"Cabinet\" (this is in the kitchen, you can ask if youre not sure) or \"Bookcase\" (this is in  the guest bedroom   you can ask if youre not sure).${
+    this.girlfriend.getKnowsAboutDeadBody()
+      ? ' or "Dead Body" (in the Storage room)'
+      : "you might be asked to check other things be open minded about it ask where, be freaked out if nncecessarry"
+  } 
   "textMessage": "[girlfriend's response]"
 }
 
