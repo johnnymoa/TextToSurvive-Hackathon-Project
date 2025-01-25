@@ -10,7 +10,9 @@
   align-items: center;
   margin-top: 20px;
 }
-
+* {
+  opacity: 0.98;
+}
 .content h1 {
   font-family: "HorrorBrush", cursive;
   font-size: 64px;
