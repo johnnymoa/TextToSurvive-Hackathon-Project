@@ -20,11 +20,29 @@ class GameState {
     // Track current game state
     this.currentRoom = "main hallway";
     this.inventory = [];
+    //add language detection
+    this.detectedLanguage = null;
+    this.postfixText = '';
+  }
+  // New helper function to append postfix text
+  appendPostfixToPrompt(basePrompt) {
+    if (this.postfixText) {
+      return `${basePrompt}\n\n${this.postfixText}`;
+    }
+    return basePrompt;
   }
 
+  // New function for language detection prompt
+  getLanguageDetectionPrompt() {
+    return `You are a language detection assistant. Analyze the user's message and respond with a JSON object containing the detected language code. Example:
+    {
+      "detectedLanguage": "en"  // or "es", "fr", "de", etc.
+    }
+    Only respond with the JSON object, nothing else.`;
+  }
   // Method to generate the prompt with current game state
   getPrompt() {
-    return `You are an AI assistant roleplaying as the user's girlfriend. Your task is to respond to the user's messages by selecting an appropriate action and target, then formatting your response as a JSON object.
+    const basePrompt = `You are an AI assistant roleplaying as the user's girlfriend. Your task is to respond to the user's messages by selecting an appropriate action and target, then formatting your response as a JSON object.
 
 Here are the possible actions and their associated targets:
 
@@ -75,10 +93,11 @@ Remember:
 - Choose the most appropriate action and target based on the user's message.
 - Keep your response message brief and natural-sounding.
 - If the user's message doesn't clearly indicate an action or target from the provided lists, use your best judgment to select the most relevant options.
-- Do not include any explanation or additional text outside of the JSON object in your response.`;
+- Do not include any explanation or additional text outside of the JSON object in your response.
+${this.detectedLanguage ? `\n\nPlease respond in: ${this.detectedLanguage}` : ''}`;
+
+    return this.appendPostfixToPrompt(basePrompt);
   }
-}
 
 // Export the class for use in other files
 export default GameState;
-

@@ -468,6 +468,35 @@
             const prompt = document.getElementById('prompt').value.trim();
             if (!prompt) return;
 
+            // Language detection on first message
+            if (chatMessages.length === 0) {
+                try {
+                    const langDetectionResponse = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: 'mistral-large-latest',
+                            messages: [
+                                { role: 'system', content: gameState.getLanguageDetectionPrompt() },
+                                { role: 'user', content: prompt }
+                            ]
+                        })
+                    });
+
+                    const langData = await langDetectionResponse.json();
+                    const langResult = JSON.parse(langData.choices[0].message.content);
+                    gameState.setDetectedLanguage(langResult.detectedLanguage);
+                    
+                    // Set a placeholder postfix text (modify as needed)
+                    gameState.setPostfixText("Remember to maintain consistent tone and style throughout the conversation.");
+                } catch (error) {
+                    console.error('Language detection failed:', error);
+                }
+            }
+
             if (!apiKey) {
                 alert('Please enter your Mistral API key first');
                 document.getElementById('apiKeyModal').style.display = 'flex';
