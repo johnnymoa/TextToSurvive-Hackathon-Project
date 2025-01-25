@@ -144,6 +144,7 @@
                 <input type="text" id="prompt" placeholder="Type your message...">
                 <button onclick="Message()">▶</button>
             </div>
+        
         </div>
     </div>
     <div id="apiKeyModal">
@@ -151,6 +152,15 @@
             <h3>Enter Mistral API Key</h3>
             <input type="password" id="apiKey" placeholder="Enter your API key">
             <button onclick="saveApiKey()">Save</button>
+        </div>
+
+        <div id="audioControls">
+            <button id="recordButton">🎤 Record</button>
+            <audio id="audioPlayback" controls style="display: none;"></audio>
+        </div>
+        <div id="inputArea">
+            <input type="text" id="prompt" placeholder="Type your message...">
+            <button onclick="Message()">Send</button>
         </div>
     </div>
 
@@ -548,6 +558,94 @@
                 document.getElementById('apiKeyModal').style.display = 'flex';
             }
         });
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Initialize audio recording capabilities
+        async function initializeAudioRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob);
+
+                    // Show loading state
+                    const loadingIndicator = createLoadingIndicator();
+                    document.getElementById('chatHistory').appendChild(loadingIndicator);
+
+                    try {
+                        // Send audio to Whisper endpoint
+                        const response = await fetch('/transcribe', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Transcription failed');
+                        }
+
+                        const result = await response.json();
+                        
+                        // Add transcribed text to chat and process it
+                        if (result.text) {
+                            document.getElementById('prompt').value = result.text;
+                            Message();
+                        }
+
+                        // Create audio playback element
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audioPlayback = document.getElementById('audioPlayback');
+                        audioPlayback.src = audioUrl;
+                        audioPlayback.style.display = 'block';
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        addMessageToChat('system', 'Failed to process audio message');
+                    } finally {
+                        loadingIndicator.remove();
+                    }
+
+                    // Reset for next recording
+                    audioChunks = [];
+                };
+
+                // Set up record button
+                const recordButton = document.getElementById('recordButton');
+                recordButton.addEventListener('click', toggleRecording);
+
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                document.getElementById('recordButton').disabled = true;
+            }
+        }
+
+        function toggleRecording() {
+            const recordButton = document.getElementById('recordButton');
+            
+            if (!isRecording) {
+                mediaRecorder.start();
+                isRecording = true;
+                recordButton.textContent = '⏹️ Stop';
+                recordButton.classList.add('recording');
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordButton.textContent = '🎤 Record';
+                recordButton.classList.remove('recording');
+            }
+        }
+
+        // Initialize audio recording when page loads
+        document.addEventListener('DOMContentLoaded', initializeAudioRecording);
     </script>
 </body>
 </html> 

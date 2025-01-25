@@ -61,6 +61,7 @@
 Current state:
 - Room: ${this.currentRoom}
 - Hiding: ${this.isHiding}
+
 - Inventory: ${this.inventory.join(", ") || "empty"}
 
 RESPONSE FORMAT:
