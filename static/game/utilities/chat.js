@@ -17,7 +17,6 @@ async function sendMessage() {
     const prompt = document.getElementById('prompt').value.trim();
     if (!prompt) return;
 
-  
     addMessageToChat('user', prompt);
     document.getElementById('prompt').value = '';
 
@@ -25,26 +24,13 @@ async function sendMessage() {
     const loadingIndicator = createLoadingIndicator();
     chatHistory.appendChild(loadingIndicator);
 
-    //Add stress logic
-    if(false){
-    
-    } else {
-        masterPrompt += `\n
-    Stress level: add info aboiut stress
-    `;
-    //update gf stress level
-    }
-
-    let masterPrompt = gameState.getPrompt();
-    
     const recentMessages = chatMessages.slice(-5);
 
     const messages = [
-        { role: 'system', content: masterPrompt },
+        { role: 'system', content: gameState.getPrompt() },
         ...recentMessages,
         { role: 'user', content: prompt }
     ];
-
 
     const assistantResponse = await mistralAPI.sendMessage(messages);
 
@@ -58,8 +44,6 @@ async function sendMessage() {
     if (jsonResponse.action) {
         girlfriend.handleAction(jsonResponse);
     }
-
-    //Add stress logic
 
     if (jsonResponse.textMessage) {
         addMessageToChat('assistant', jsonResponse.textMessage);

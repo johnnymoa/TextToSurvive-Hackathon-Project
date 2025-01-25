@@ -10,16 +10,30 @@ class Girlfriend extends Character {
 
     draw(CELL_SIZE) {
         if (this.characterPos) {
+            const newSize = CELL_SIZE * 1.7;
+            const offset = (newSize - CELL_SIZE) / 2;
             push();
             if (this.previousPos && this.characterPos.x > this.previousPos.x) {
                 scale(-1, 1);
-                    image(this.img, -this.characterPos.x * CELL_SIZE - CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                image(this.img, 
+                    -this.characterPos.x * CELL_SIZE - newSize + offset,
+                    this.characterPos.y * CELL_SIZE - offset,
+                    newSize,
+                    newSize);
             } else {
                 if (this.getIsHiding()) {
                     tint(255, 153);
-                    image(this.img, this.characterPos.x * CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    image(this.img,
+                        this.characterPos.x * CELL_SIZE - offset,
+                        this.characterPos.y * CELL_SIZE - offset,
+                        newSize,
+                        newSize);
                 } else {
-                    image(this.img, this.characterPos.x * CELL_SIZE, this.characterPos.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    image(this.img,
+                        this.characterPos.x * CELL_SIZE - offset,
+                        this.characterPos.y * CELL_SIZE - offset,
+                        newSize,
+                        newSize);
                 }
             }
             pop();

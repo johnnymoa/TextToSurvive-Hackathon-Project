@@ -85,7 +85,7 @@ class Clown extends Character {
   
     draw(CELL_SIZE) {
         if (this.characterPos) {
-            const newSize = CELL_SIZE * 1.5; 
+            const newSize = CELL_SIZE * 2; 
             const offset = (newSize - CELL_SIZE) / 2; 
             push();
             if (this.previousPos && this.characterPos.x > this.previousPos.x) {
