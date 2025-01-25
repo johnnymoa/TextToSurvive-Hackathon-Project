@@ -148,7 +148,7 @@ function drawFurniture(furniture, sprites) {
     
     // Draw all labels second
     for (let item of furniture) {
-        if (item.pos && item.in_use == true) {
+        if (item.pos && item.in_use == true && item.name !== "Storage") {
             push();
             // Draw light gray background
             fill(220);
@@ -168,7 +168,26 @@ function drawFurniture(furniture, sprites) {
     }
 }
 
-function drawStorage(storage) {
+function drawStorage() {
    let storage = gameState.getStorage();
-   
+    if (storage && storage.pos && storage.in_use == true) {
+        push();
+        // Draw light gray background
+        fill(220);
+        noStroke();
+        const padding = 4;
+        const textWidth = textSize() * storage.name.length * 0.6;
+        rectMode(CENTER);
+        rect((storage.pos.x + 0.5) * CELL_SIZE, (storage.pos.y + 0.5) * CELL_SIZE, textWidth, 20);
+        
+        // Draw black text
+        fill(0);
+        textAlign(CENTER, CENTER);
+        textSize(12);
+        text(storage.name, (storage.pos.x + 0.5) * CELL_SIZE, (storage.pos.y + 0.5) * CELL_SIZE);
+
+        // Draw second "Storage" text on top
+        text(storage.name, (storage.pos.x + 0.5) * CELL_SIZE, (storage.pos.y + 0.5) * CELL_SIZE - 20);
+        pop();
+    }
 }

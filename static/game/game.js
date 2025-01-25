@@ -59,7 +59,10 @@ function draw() {
   //drawGrid();
   // drawWallsAndDoors();
 
-  drawLabels(gameState.map_data.rooms);
+    drawLabels(gameState.map_data.rooms);
+
+    drawStorage() 
+
 
   if (girlfriend) {
     girlfriend.drawPath(CELL_SIZE);
