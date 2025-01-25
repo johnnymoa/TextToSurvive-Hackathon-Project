@@ -35,7 +35,7 @@ function getFurniture() {
                     "y": 15
                 }
                 ,
-                "state": "locked",
+                "state": "unlocked",
                 "in_use": false,
                 "locked_message":"It's locked, I can't get out!! Why is it locked??",
                 "unlocked_message":"Ok it's open! 🥳",
