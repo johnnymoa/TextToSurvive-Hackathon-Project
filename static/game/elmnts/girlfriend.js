@@ -9,8 +9,8 @@ class Girlfriend extends Character {
         this.stressLevel = 30;
         this.inventory = [];
         this.knows_about_dead_body = false;
-        this.independance_rate = 3000;
-        this.game_loops_before_deciding_for_herself = this.independance_rate;
+        this.independance_rate = 2000;
+        this.game_loops_before_deciding_for_herself = 700;
     }
 
     update(){
