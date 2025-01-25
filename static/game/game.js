@@ -4,8 +4,6 @@ let GRID_ROWS = 0;
 let grid = [];
 
 let gameState;
-let girlfriend;
-let clown;
 
 let baseMapImg;
 let girlfriendImg;
@@ -26,12 +24,12 @@ function setup() {
 
     gameState = new GameState({
         ...getApt(),
-        grid: getGrid()
+        grid: getGrid(),
+        furniture:getFurniture()
     });
 
     GRID_COLS = gameState.map_data.gridCols;
     GRID_ROWS = gameState.map_data.gridRows;
-
 
     girlfriend = new Girlfriend(gameState, girlfriendImg);
     clown = new Clown(gameState, clownImg);
