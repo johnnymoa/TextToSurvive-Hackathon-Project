@@ -1,0 +1,4 @@
+flask 
+soundfile 
+torch 
+transformers

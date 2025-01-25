@@ -430,6 +430,57 @@ main {
     filter: brightness(1);
   }
 }
+<<<<<<< HEAD:static/assets/css/style.css
+/* Audio Controls Styling */
+#audioControls {
+  padding: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+
+#recordButton {
+  font-family: "HorrorBrush", cursive;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #9b0000;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 16px;
+}
+
+#recordButton:hover {
+  background: #9b0000;
+  box-shadow: 0 0 10px rgba(155, 0, 0, 0.5);
+}
+
+#recordButton.recording {
+  background: #9b0000;
+  animation: pulseRecord 2s infinite;
+}
+
+#audioPlayback {
+  max-width: 200px;
+  filter: sepia(100%) saturate(400%) saturate(400%) saturate(400%) saturate(400%) saturate(400%) saturate(400%) contrast(100%) hue-rotate(320deg);
+}
+
+@keyframes pulseRecord {
+  0% {
+      box-shadow: 0 0 0 0 rgba(155, 0, 0, 0.7);
+  }
+  70% {
+      box-shadow: 0 0 0 10px rgba(155, 0, 0, 0);
+  }
+  100% {
+      box-shadow: 0 0 0 0 rgba(155, 0, 0, 0);
+  }
+}
+=======
 
 /* Modifier les styles pour le bouton son */
 .sound-button {
@@ -480,3 +531,4 @@ main {
   background-color: rgba(155, 0, 0, 0.1);
   box-shadow: 0 0 15px rgba(155, 0, 0, 0.5);
 }
+>>>>>>> a9f44a81570ec8b727680409f45cf384a773f26b:static/assets/css/index-style.css
