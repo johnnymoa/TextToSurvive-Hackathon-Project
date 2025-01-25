@@ -1,6 +1,5 @@
 
 class Numpad {
-    class Numpad {
         constructor(containerId, options = {}) {
             // Get difficulty from environment or default to 1
             const difficulty = parseInt(process.env.GAME_DIFFICULTY) || 1;
