@@ -106,3 +106,9 @@ function drawWallsAndDoors() {
         }
     }
 }
+
+function drawFurniture(furniture) {
+    for (let item of furniture) {
+     
+    }
+}
