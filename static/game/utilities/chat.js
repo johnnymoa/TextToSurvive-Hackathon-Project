@@ -31,47 +31,92 @@ async function sendMessage() {
   const loadingIndicator = createLoadingIndicator();
   chatHistory.appendChild(loadingIndicator);
 
-  // First, get the stress prompt and send it
-  const stressPrompt = gameState.getStressPrompt();
-  const stressMessages = [
-    {
-      role: "system",
-      content: stressPrompt,
-    },
-    { role: "user", content: prompt },
-  ];
-  console.log("stressMessages", stressMessages);
+  try {
+    // Handle stress calculation first
+    const stressPrompt = gameState.getStressPrompt();
+    const stressMessages = [
+      { role: "system", content: stressPrompt },
+      { role: "user", content: prompt }
+    ];
+    
+    const stressResponse = await mistralAPI.sendMessage(stressMessages);
+    const stressChange = JSON.parse(stressResponse).stressChange || 0;
+    girlfriend.updateStressLevel(stressChange);
 
-  const stressResponse = await mistralAPI.sendMessage(stressMessages);
-  const stressChange = JSON.parse(stressResponse).stressChange || 0;
+    // Handle main girlfriend response
+    const masterPrompt = gameState.getPrompt();
+    const recentMessages = chatMessages.slice(-5);
+    const messages = [
+      { role: "system", content: masterPrompt },
+      ...recentMessages,
+      { role: "user", content: prompt }
+    ];
 
-  girlfriend.updateStressLevel(stressChange);
- 
+    const assistantResponse = await mistralAPI.sendMessage(messages);
+    const jsonResponse = JSON.parse(assistantResponse);
 
-  let masterPrompt = gameState.getPrompt();
-  const recentMessages = chatMessages.slice(-5);
+    chatHistory.removeChild(loadingIndicator);
 
-  const messages = [
-    { role: "system", content: masterPrompt },
-    ...recentMessages,
-    { role: "user", content: prompt },
-  ];
+    if (jsonResponse.action) {
+      girlfriend.handleAction(jsonResponse);
+    }
 
-  const assistantResponse = await mistralAPI.sendMessage(messages);
+    if (jsonResponse.textMessage) {
+      addMessageToChat("assistant", jsonResponse.textMessage);
+    }
 
-  chatHistory.removeChild(loadingIndicator);
+    // Handle rival response if active
+    if (gameState.rivalActive) {
+      await handleRivalResponse(prompt);
+    }
 
-  const jsonStart = assistantResponse.indexOf("{");
-  const jsonEnd = assistantResponse.lastIndexOf("}") + 1;
-  const jsonContent = assistantResponse.substring(jsonStart, jsonEnd);
-  const jsonResponse = JSON.parse(jsonContent);
-
-  if (jsonResponse.action) {
-    girlfriend.handleAction(jsonResponse);
+  } catch (error) {
+    console.error("Error in sendMessage:", error);
+    chatHistory.removeChild(loadingIndicator);
+    addMessageToChat("assistant", "Sorry, there was an error processing your message.");
   }
+}
 
-  if (jsonResponse.textMessage) {
-    addMessageToChat("assistant", jsonResponse.textMessage);
+async function handleRivalResponse(prompt) {
+  const loadingIndicator = createLoadingIndicator();
+  const chatHistory = document.getElementById("chatHistory");
+  
+  // Add delay before rival starts typing
+  await new Promise(resolve => setTimeout(resolve, 1500));
+  chatHistory.appendChild(loadingIndicator);
+
+  try {
+    const rivalPrompt = `You are playing the role of a mysterious person who has joined the chat. Your responses should be:
+- Somewhat cryptic but knowledgeable about the building
+- Occasionally misleading but not obviously malicious
+- Brief and text-message like
+- Focused on survival but with unclear motives
+
+Current game state:
+${gameState.getRivalContext()}
+
+Format your response as a JSON object:
+{
+  "textMessage": "your message here",
+  "intent": "help" or "mislead"
+}`;
+
+    const messages = [
+      { role: "system", content: rivalPrompt },
+      { role: "user", content: prompt }
+    ];
+
+    const response = await mistralAPI.sendMessage(messages);
+    const jsonResponse = JSON.parse(response);
+    
+    // Add delay before showing rival's message
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    chatHistory.removeChild(loadingIndicator);
+    
+    addMessageToChat("rival", jsonResponse.textMessage);
+  } catch (error) {
+    console.error("Error in handleRivalResponse:", error);
+    chatHistory.removeChild(loadingIndicator);
   }
 }
 
@@ -85,7 +130,13 @@ function addMessageToChat(role, content) {
 
   chatMessages.push({ role, content });
 
-  if (role === "assistant" && localStorage.getItem("isSoundOn") !== "false") {
+  // Update message count and check rival activation
+  gameState.messageCount++;
+  gameState.checkRivalActivation();
+
+  // Play sound for assistant or rival messages
+  if ((role === "assistant" || role === "rival") && 
+      localStorage.getItem("isSoundOn") !== "false") {
     playMessageSound();
   }
 }
