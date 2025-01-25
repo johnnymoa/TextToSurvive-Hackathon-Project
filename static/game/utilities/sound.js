@@ -27,6 +27,10 @@ function playSound(sound) {
                 break;
             case 'message':
                 soundToPlay = messageSnd;
+                break;
+            case 'success':
+                soundToPlay = successSnd;
+                break;
         }
 
         // Play the sound if it's defined and loaded

@@ -83,8 +83,17 @@ main {
 }
 
 .logo img {
-  width: 230px;
+  width: 400px;
   height: auto;
+}
+
+.subtitle {
+  font-family: "HorrorBrush", cursive;
+  color: #fff;
+  font-size: 24px;
+  text-align: center;
+  margin-top: 10px;
+  letter-spacing: 2px;
 }
 
 .menu {

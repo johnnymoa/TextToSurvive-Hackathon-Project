@@ -17,6 +17,8 @@ class GameState {
     playSound('unlockDoor');
     setTimeout(() => {
       winGameModal();
+      bgMusic.pause();
+      playSound('success');
     }, 3000);
     return;
   }

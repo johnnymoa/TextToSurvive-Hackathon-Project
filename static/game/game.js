@@ -18,6 +18,8 @@ let unlockDoorSnd;
 let useKnifeSnd;
 let messageSnd;
 
+let successSnd;
+
 
 
 
@@ -43,6 +45,7 @@ function preload() {
   unlockDoorSnd = loadSound('/assets/sounds/unlockdoor.mp3');
   useKnifeSnd = loadSound('/assets/sounds/useknife.mp3');
   messageSnd = loadSound('/assets/sounds/message.wav');
+  successSnd = loadSound('/assets/sounds/success.mp3');
 }
 
 async function initializeChat() {
