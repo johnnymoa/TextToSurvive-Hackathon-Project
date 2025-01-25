@@ -72,7 +72,6 @@ main {
   align-items: center;
   gap: 100px;
   z-index: 1;
-  margin-top: 200px;
 }
 
 .logo {
@@ -90,6 +89,7 @@ main {
 
 .menu {
   display: flex;
+  margin-top: 250px;
   flex-direction: column;
   gap: 30px;
   align-items: center;
@@ -317,19 +317,27 @@ main {
   color: #fff;
   text-align: center;
   max-width: 800px;
-  margin: 40px auto;
+  margin: 0 auto;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0px;
 }
 
 .content h1 {
   font-family: "HorrorBrush", cursive;
   font-size: 64px;
   color: #9b0000;
-  position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin-bottom: 30px;
   letter-spacing: 4px;
+}
+
+.game-description p {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #fff;
 }
 
 .back-button {
@@ -443,4 +451,32 @@ main {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.gf-image {
+  width: 400px;
+  height: auto;
+  margin-top: 50px;
+}
+
+.next-button {
+  font-family: "HorrorBrush", cursive;
+  font-size: 36px;
+  color: #fff;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 50px;
+  background-color: rgba(155, 0, 0, 0.3);
+  padding: 10px 30px;
+  border: 2px solid #9b0000;
+  border-radius: 5px;
+}
+
+.next-button:hover {
+  color: #9b0000;
+  background-color: rgba(155, 0, 0, 0.1);
+  box-shadow: 0 0 15px rgba(155, 0, 0, 0.5);
 }

@@ -11,6 +11,15 @@ function createLoadingIndicator() {
   return loadingDiv;
 }
 
+async function addProgramaticMessage(message) {
+  const chatHistory = document.getElementById("chatHistory");
+  const loadingIndicator = createLoadingIndicator();
+  chatHistory.appendChild(loadingIndicator);
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  chatHistory.removeChild(loadingIndicator);
+  addMessageToChat("assistant", message);
+}
+
 async function sendMessage() {
   const prompt = document.getElementById("prompt").value.trim();
   if (!prompt) return;
@@ -33,17 +42,12 @@ async function sendMessage() {
   ];
   console.log("stressMessages", stressMessages);
 
-  // Get stress level change
   const stressResponse = await mistralAPI.sendMessage(stressMessages);
   const stressChange = JSON.parse(stressResponse).stressChange || 0;
 
-  // Update girlfriend's stress level
   girlfriend.updateStressLevel(stressChange);
-  console.log("girlfriend.stressLevel", girlfriend.stressLevel);
+ 
 
-  console.log("stressChange", stressChange);
-
-  // Now continue with the regular chat flow
   let masterPrompt = gameState.getPrompt();
   const recentMessages = chatMessages.slice(-5);
 

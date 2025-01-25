@@ -8,8 +8,8 @@ class Clown extends Character {
     this.setCharacterPosition(this.gameState.map_data.clown_start_pos);
 
     // Add initial speed properties
-    this.baseSpeed = 600; // Starting movement delay in milliseconds
-    this.minSpeed = 100; // Fastest possible speed
+    this.baseSpeed = 900; // Starting movement delay in milliseconds
+    this.minSpeed = 300; // Fastest possible speed
     this.speedIncreaseInterval = 150000; // Speed increases every 30 seconds
     this.speedIncreaseAmount = 100; // How much to decrease delay each time
 

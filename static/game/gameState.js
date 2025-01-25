@@ -38,6 +38,10 @@ class GameState {
     this.isHiding = false;
   }
 
+  getExit() {
+    return this.map_data.furniture.find(furniture => furniture.name === "The Exit");
+  }
+
   getStressPrompt() {
     const currentStress = this.girlfriend ? this.girlfriend.stressLevel : 50; // Default to 50 if girlfriend not initialized
 
@@ -85,21 +89,28 @@ RESPONSE FORMAT:
 You must ALWAYS respond with a JSON object. 
 Your response should reflect a girlfriend's reaction to her boyfriend's message given this context and following the following structure:
 
-1. For movement instructions ("go" action):
+For movement instructions ("go" action):
 {
   "action": "go",
   "target": "[room name]",
   "textMessage": "[girlfriend's response]"
 }
 
-2. For hiding instructions ("hide" action):
+For hiding instructions ("hide" action):
 {
   "action": "hide",
   "target": "[hiding place name]",
   "textMessage": "[girlfriend's response]"
 }
 
-3. For any other input:
+For exiting the house by the exit in the mainhallway instructions ("exit" action):
+{
+  "action": "exit",
+  "target": "The Exit",
+  "textMessage": "[girlfriend's response]"
+}
+
+For any other input:
 {
   "textMessage": "[girlfriend's response]"
 }

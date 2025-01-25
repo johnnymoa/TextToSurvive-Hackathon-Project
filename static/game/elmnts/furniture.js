@@ -283,14 +283,16 @@ function getFurniture() {
                     }
                 ]
             },{
-                "name":"Entrance",
+                "name":"The Exit",
                 "room":"Main Hallway",
+                "in_use": true,
+
                 "pos":{
-                    "x": 15,
-                    "y": 18
+                    "x": 14,
+                    "y": 19
                 },
                 "state":"locked",
-                "locked_message":"I seem to need a key to get out of here",
+                "locked_message":"Omg I can't get out, I need a key... there's a note here that says REMINDER: CHECK STORAGE. shit.",
                 "unlocked_message":"IM OUT, AND THIS RELATIONSHIP IS OVER",
                 "sprite": [
                     {

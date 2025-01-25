@@ -53,7 +53,7 @@ function draw() {
     if(furnitureSprites) {
         drawFurniture(gameState.map_data.furniture, furnitureSprites);
     }
-    drawGrid();
+    //drawGrid();
     // drawWallsAndDoors();
 
     drawLabels(gameState.map_data.rooms);

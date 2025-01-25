@@ -7,6 +7,7 @@ class Girlfriend extends Character {
     this.setCharacterPosition(this.gameState.map_data.girlfriend_start_pos);
     this.currentHidingSpot = null;
     this.stressLevel = 30;
+    this.inventory = [];
   }
 
   draw(CELL_SIZE) {
@@ -60,6 +61,9 @@ class Girlfriend extends Character {
         break;
       case "hide":
         this.hide(response.target);
+        break;  
+      case "exit":
+        this.exit();
         break;
     }
   }
@@ -71,6 +75,17 @@ class Girlfriend extends Character {
     );
     // Return hiding places for current room if found, otherwise empty array
     return currentRoom ? currentRoom.hiding_places : [];
+  }
+
+  getAvailableFurniture() {
+    // Get current room
+    const currentRoom = this.getCurrentRoom();
+    if (!currentRoom) return [];
+
+    // Filter furniture list to only include items in current room that are in use
+    return this.gameState.map_data.furniture.filter(
+      furniture => furniture.room === currentRoom && furniture.in_use === true
+    );
   }
 
   getIsHiding() {
@@ -113,5 +128,14 @@ class Girlfriend extends Character {
     this.moveToPosition(hidingSpot.position, () => {
       this.currentHidingSpot = hidingSpotName;
     });
+  }
+
+  exit() {
+    this.moveToPosition({"x": 14,"y": 19}, () => {
+      if (!this.inventory || !this.inventory.includes("Key")) {
+        // Cannot exit without key
+        return;
+      }
+      });
   }
 }

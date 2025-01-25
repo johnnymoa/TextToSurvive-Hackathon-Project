@@ -98,7 +98,7 @@ body {
 }
 
 .assistant-message {
-  color: white;
+  color: black;
   margin-right: auto;
   border-radius: 20px 20px 20px 4px;
 }
