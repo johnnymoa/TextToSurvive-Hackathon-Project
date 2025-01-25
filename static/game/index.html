@@ -45,11 +45,30 @@
                     </div>
                 </div>
             </div>
+        
         </div>
     </div>
+<<<<<<< HEAD
+    <div id="apiKeyModal">
+        <div class="modal-content">
+            <h3>Enter Mistral API Key</h3>
+            <input type="password" id="apiKey" placeholder="Enter your API key">
+            <button onclick="saveApiKey()">Save</button>
+        </div>
+
+        <div id="audioControls">
+            <button id="recordButton">🎤 Record</button>
+            <audio id="audioPlayback" controls style="display: none;"></audio>
+        </div>
+        <div id="inputArea">
+            <input type="text" id="prompt" placeholder="Type your message...">
+            <button onclick="Message()">Send</button>
+        </div>
+=======
 
     <div class="sound-button" onclick="toggleSound()">
         <img src="/static/assets/img/sondon.png" alt="Sound control" id="soundIcon" />
+>>>>>>> a9f44a81570ec8b727680409f45cf384a773f26b
     </div>
 
     <audio id="bgMusic" loop>
@@ -80,6 +99,467 @@
     <script src="/static/game/utilities/draw.js"></script>
     <script src="/static/game/game.js"></script>
 
+<<<<<<< HEAD
+                // Once loaded, initialize the P5 canvas with correct dims
+                let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+                canvas.parent('mapWrapper');
+                adjustScale();
+
+            } catch (e) {
+                console.error("Error loading apt.json:", e);
+            }
+        }
+
+        function adjustScale() {
+            const availableWidth = window.innerWidth - 400 - 40; // space for chat + margins
+            const actualCanvasWidth = GRID_COLS * CELL_SIZE;
+            const scale = availableWidth / actualCanvasWidth;
+            const mapWrapper = document.querySelector('#mapSection .map-wrapper');
+            if (mapWrapper) {
+                // use CSS zoom or transform
+                mapWrapper.style.zoom = scale;
+            }
+        }
+
+        window.addEventListener('resize', adjustScale);
+
+        // p5.js setup
+        function setup() {
+            // We'll wait to createCanvas until apt.json is loaded
+            loadAptJson();
+        }
+
+        // p5.js draw loop
+        function draw() {
+            if (!grid || grid.length === 0) {
+                // No grid loaded yet or apt.json not ready
+                return;
+            }
+            background(255);
+            drawGrid();
+            drawRooms();
+            drawWallsAndDoors();
+            drawPath();
+            drawCharacter();
+        }
+
+        function drawGrid() {
+            stroke(200);
+            for (let x = 0; x <= GRID_COLS; x++) {
+                line(x * CELL_SIZE, 0, x * CELL_SIZE, GRID_ROWS*CELL_SIZE);
+            }
+            for (let y = 0; y <= GRID_ROWS; y++) {
+                line(0, y * CELL_SIZE, GRID_COLS*CELL_SIZE, y * CELL_SIZE);
+            }
+        }
+
+        function drawRooms() {
+            for (let [roomName, cells] of rooms) {
+                const hue = stringToHue(roomName);
+                fill(hue, 30, 95, 0.3);
+                noStroke();
+                for (let cell of cells) {
+                    rect(cell.x * CELL_SIZE, cell.y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                }
+                if (cells.length > 0) {
+                    fill(0);
+                    textAlign(CENTER, CENTER);
+                    textSize(10);
+                    text(roomName, 
+                        cells[0].x * CELL_SIZE + CELL_SIZE/2, 
+                        cells[0].y * CELL_SIZE + CELL_SIZE/2
+                    );
+                }
+            }
+        }
+
+        function drawWallsAndDoors() {
+            for (let y = 0; y < GRID_ROWS; y++) {
+                for (let x = 0; x < GRID_COLS; x++) {
+                    const cell = grid[y][x];
+                    if (cell.type === 'wall') {
+                        fill(0);
+                        noStroke();
+                        rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    } else if (cell.type === 'door') {
+                        fill(139, 69, 19); // Brown color for doors
+                        noStroke();
+                        rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    } else if (cell.color) {
+                        noStroke();
+                        switch(cell.color) {
+                            case 'yellow':
+                                fill('#ffeb3b');
+                                break;
+                            case 'blue':
+                                fill('#2196f3');
+                                break;
+                            case 'green':
+                                fill('#4caf50');
+                                break;
+                            case 'red':
+                                fill('#f44336');
+                                break;
+                        }
+                        rect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+                    }
+                }
+            }
+        }
+
+        function drawPath() {
+            if (path.length > 0 && isMoving) {
+                noFill();
+                stroke(0, 255, 0);
+                strokeWeight(2);
+                line(
+                    characterPos.x * CELL_SIZE + CELL_SIZE/2,
+                    characterPos.y * CELL_SIZE + CELL_SIZE/2,
+                    path[0].x * CELL_SIZE + CELL_SIZE/2,
+                    path[0].y * CELL_SIZE + CELL_SIZE/2
+                );
+                for (let i = 0; i < path.length - 1; i++) {
+                    line(
+                        path[i].x * CELL_SIZE + CELL_SIZE/2,
+                        path[i].y * CELL_SIZE + CELL_SIZE/2,
+                        path[i + 1].x * CELL_SIZE + CELL_SIZE/2,
+                        path[i + 1].y * CELL_SIZE + CELL_SIZE/2
+                    );
+                }
+                strokeWeight(1);
+            }
+        }
+
+        function drawCharacter() {
+            if (characterPos) {
+                textSize(CELL_SIZE * 0.8);
+                textAlign(CENTER, CENTER);
+                text('👧', 
+                    characterPos.x * CELL_SIZE + CELL_SIZE/2, 
+                    characterPos.y * CELL_SIZE + CELL_SIZE/2
+                );
+            }
+        }
+
+        function stringToHue(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return hash % 360;
+        }
+
+        // Simple BFS for pathfinding
+        function findPath(start, end) {
+            const queue = [[start]];
+            const visited = new Set();
+            const key = pos => `${pos.x},${pos.y}`;
+            visited.add(key(start));
+
+            while (queue.length > 0) {
+                const currentPath = queue.shift();
+                const current = currentPath[currentPath.length - 1];
+
+                if (current.x === end.x && current.y === end.y) {
+                    return currentPath;
+                }
+                const neighbors = [
+                    { x: current.x, y: current.y - 1 },
+                    { x: current.x+1, y: current.y },
+                    { x: current.x, y: current.y+1 },
+                    { x: current.x-1, y: current.y }
+                ];
+                for (const next of neighbors) {
+                    if (next.x < 0 || next.x >= GRID_COLS || next.y < 0 || next.y >= GRID_ROWS) continue;
+                    if (visited.has(key(next))) continue;
+
+                    const cell = grid[next.y][next.x];
+                    if (cell.type === 'wall') continue;
+
+                    visited.add(key(next));
+                    queue.push([...currentPath, next]);
+                }
+            }
+            return [];
+        }
+
+        function moveToRoom(roomName) {
+            const targetRoom = Array.from(rooms.entries())
+                .find(([name]) => name.toLowerCase() === roomName.toLowerCase());
+            if (!targetRoom || !characterPos) return false;
+
+            const [_, cells] = targetRoom;
+            if (cells.length === 0) return false;
+            path = findPath(characterPos, cells[0]);
+            if (path.length > 0) {
+                isMoving = true;
+                moveCharacterAlongPath();
+                return true;
+            }
+            return false;
+        }
+
+        function moveCharacterAlongPath() {
+            if (moveInterval) clearInterval(moveInterval);
+            moveInterval = setInterval(() => {
+                if (path.length === 0) {
+                    isMoving = false;
+                    clearInterval(moveInterval);
+                    // Update game state with new room when movement is complete
+                    const currentRoomEntry = Array.from(rooms.entries())
+                        .find(([_, cells]) => cells.some(cell => 
+                            cell.x === characterPos.x && cell.y === characterPos.y
+                        ));
+                    if (currentRoomEntry) {
+                        gameState.setCurrentRoom(currentRoomEntry[0]);
+                    }
+                    return;
+                }
+                const nextPos = path.shift();
+                characterPos = nextPos;
+            }, 200);
+        }
+
+        /* Chat / Mistral-related code */
+        function createLoadingIndicator() {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'chat-message assistant-message';
+            loadingDiv.innerHTML = `
+                <div class="loading-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            `;
+            return loadingDiv;
+        }
+
+        function addMessageToChat(role, content) {
+            const chatHistory = document.getElementById('chatHistory');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${role}-message`;
+            messageDiv.textContent = content;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            // Store message in chat history
+            chatMessages.push({ role, content });
+        }
+
+        async function Message() {
+            const prompt = document.getElementById('prompt').value.trim();
+            if (!prompt) return;
+
+            // Language detection on first message
+            if (chatMessages.length === 0) {
+                try {
+                    const langDetectionResponse = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${apiKey}`
+                        },
+                        body: JSON.stringify({
+                            model: 'mistral-large-latest',
+                            messages: [
+                                { role: 'system', content: gameState.getLanguageDetectionPrompt() },
+                                { role: 'user', content: prompt }
+                            ]
+                        })
+                    });
+
+                    const langData = await langDetectionResponse.json();
+                    const langResult = JSON.parse(langData.choices[0].message.content);
+                    gameState.setDetectedLanguage(langResult.detectedLanguage);
+                    
+                    // Set a placeholder postfix text (modify as needed)
+                    gameState.setPostfixText("Remember to maintain consistent tone and style throughout the conversation.");
+                } catch (error) {
+                    console.error('Language detection failed:', error);
+                }
+            }
+
+            if (!apiKey) {
+                alert('Please enter your Mistral API key first');
+                document.getElementById('apiKeyModal').style.display = 'flex';
+                return;
+            }
+
+            addMessageToChat('user', prompt);
+            document.getElementById('prompt').value = '';
+
+            const chatHistory = document.getElementById('chatHistory');
+            const loadingIndicator = createLoadingIndicator();
+            chatHistory.appendChild(loadingIndicator);
+
+            try {
+                // Get last 5 messages from chat history
+                const recentMessages = chatMessages.slice(-5);
+                
+                // Prepare messages array for Mistral
+                const messages = [
+                    { role: 'system', content: gameState.getPrompt() },
+                    ...recentMessages,
+                    { role: 'user', content: prompt }
+                ];
+
+                const response = await fetch('https://api.mistral.ai/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'mistral-large-latest',
+                        messages: messages
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Mistral response:', data.choices[0].message.content);
+                const assistantResponse = data.choices[0].message.content || "";
+
+                try {
+                    const jsonStart = assistantResponse.indexOf('{');
+                    const jsonEnd = assistantResponse.lastIndexOf('}') + 1;
+                    const jsonContent = assistantResponse.substring(jsonStart, jsonEnd);
+                    const jsonResponse = JSON.parse(jsonContent);
+                    console.log('Parsed JSON response:', jsonResponse);
+
+                    if (jsonResponse.textMessage) {
+                        addMessageToChat('assistant', jsonResponse.textMessage);
+                    }
+                    if (jsonResponse.action === 'go' && jsonResponse.to) {
+                        moveToRoom(jsonResponse.to);
+                    }
+                } catch (e) {
+                    console.error('Error parsing JSON from response:', e);
+                    addMessageToChat('assistant', 'Sorry, I had trouble understanding that response.');
+                }
+            } catch (error) {
+                addMessageToChat('assistant', `Error: ${error.message}`);
+            } finally {
+                loadingIndicator.remove();
+            }
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('apiKey').value.trim();
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('mistralApiKey', key);
+                document.getElementById('apiKeyModal').style.display = 'none';
+            }
+        }
+
+        // Allow ing message with Enter
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('prompt').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    Message();
+                }
+            });
+
+            if (!apiKey) {
+                document.getElementById('apiKeyModal').style.display = 'flex';
+            }
+        });
+
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Initialize audio recording capabilities
+        async function initializeAudioRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const formData = new FormData();
+                    formData.append('audio', audioBlob);
+
+                    // Show loading state
+                    const loadingIndicator = createLoadingIndicator();
+                    document.getElementById('chatHistory').appendChild(loadingIndicator);
+
+                    try {
+                        // Send audio to Whisper endpoint
+                        const response = await fetch('/transcribe', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Transcription failed');
+                        }
+
+                        const result = await response.json();
+                        
+                        // Add transcribed text to chat and process it
+                        if (result.text) {
+                            document.getElementById('prompt').value = result.text;
+                            Message();
+                        }
+
+                        // Create audio playback element
+                        const audioUrl = URL.createObjectURL(audioBlob);
+                        const audioPlayback = document.getElementById('audioPlayback');
+                        audioPlayback.src = audioUrl;
+                        audioPlayback.style.display = 'block';
+
+                    } catch (error) {
+                        console.error('Error:', error);
+                        addMessageToChat('system', 'Failed to process audio message');
+                    } finally {
+                        loadingIndicator.remove();
+                    }
+
+                    // Reset for next recording
+                    audioChunks = [];
+                };
+
+                // Set up record button
+                const recordButton = document.getElementById('recordButton');
+                recordButton.addEventListener('click', toggleRecording);
+
+            } catch (err) {
+                console.error('Error accessing microphone:', err);
+                document.getElementById('recordButton').disabled = true;
+            }
+        }
+
+        function toggleRecording() {
+            const recordButton = document.getElementById('recordButton');
+            
+            if (!isRecording) {
+                mediaRecorder.start();
+                isRecording = true;
+                recordButton.textContent = '⏹️ Stop';
+                recordButton.classList.add('recording');
+            } else {
+                mediaRecorder.stop();
+                isRecording = false;
+                recordButton.textContent = '🎤 Record';
+                recordButton.classList.remove('recording');
+            }
+        }
+
+        // Initialize audio recording when page loads
+        document.addEventListener('DOMContentLoaded', initializeAudioRecording);
+    </script>
+=======
+>>>>>>> a9f44a81570ec8b727680409f45cf384a773f26b
 </body>
 
 </html>
