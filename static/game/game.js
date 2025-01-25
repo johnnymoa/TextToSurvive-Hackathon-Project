@@ -17,6 +17,8 @@ const mistralAPI = new MistralAPI();
 
 let chatMessages = [];
 
+let furnitureSprites = {};
+
 function setup() {
     baseMapImg = loadImage('/assets/img/appartment/baseMap.PNG');
     girlfriendImg = loadImage('/assets/img/gf.png');
@@ -27,6 +29,8 @@ function setup() {
         grid: getGrid(),
         furniture:getFurniture()
     });
+
+    furnitureSprites = loadFurnitureSprites(gameState.map_data.furniture);
 
     GRID_COLS = gameState.map_data.gridCols;
     GRID_ROWS = gameState.map_data.gridRows;
@@ -41,11 +45,15 @@ function setup() {
 }
 
 function draw() {
+    clear();
 
     if (baseMapImg) {
         image(baseMapImg, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
     }
-    // drawGrid();
+    if(furnitureSprites) {
+        drawFurniture(gameState.map_data.furniture, furnitureSprites);
+    }
+    drawGrid();
     // drawWallsAndDoors();
 
     drawLabels(gameState.map_data.rooms);

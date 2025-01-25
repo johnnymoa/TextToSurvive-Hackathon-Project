@@ -107,8 +107,45 @@ function drawWallsAndDoors() {
     }
 }
 
-function drawFurniture(furniture) {
+function loadFurnitureSprites(furniture) {
+    console.log(furniture);
+    const sprites = [];
+    for (let i = 0; i < furniture.length; i++) {
+        for (let j = 0; j < furniture[i].sprite.length; j++) {
+            if (!sprites.includes(furniture[i].sprite[j].img)) {
+                sprites[furniture[i].sprite[j].img] = loadImage(furniture[i].sprite[j].img);
+            }
+        }
+    }
+    return sprites;
+}
+function drawFurniture(furniture, sprites) {
+    // Draw all sprites first
     for (let item of furniture) {
-     
+        const sprite = item.sprite.find(s => s.for === item.state);
+        if (sprite && sprites[sprite.img]) {
+            image(sprites[sprite.img], 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+        }
+    }
+    
+    // Draw all labels second
+    for (let item of furniture) {
+        if (item.pos) {
+            push();
+            // Draw light gray background
+            fill(220);
+            noStroke();
+            const padding = 4;
+            const textWidth = textSize() * item.name.length * 0.6;
+            rectMode(CENTER);
+            rect((item.pos.x + 0.5) * CELL_SIZE, (item.pos.y + 0.5) * CELL_SIZE, textWidth, 20);
+            
+            // Draw black text
+            fill(0);
+            textAlign(CENTER, CENTER);
+            textSize(12);
+            text(item.name, (item.pos.x + 0.5) * CELL_SIZE, (item.pos.y + 0.5) * CELL_SIZE);
+            pop();
+        }
     }
 }

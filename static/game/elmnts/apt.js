@@ -47,8 +47,8 @@ function getApt() {
       {
         "name": "My Bedroom",
         "label_position": {
-          "x": 4,
-          "y": 17
+          "x": 7,
+          "y": 14
         },
         "start_col": 1,
         "end_col": 8,

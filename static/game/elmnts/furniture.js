@@ -1,14 +1,11 @@
 function getFurniture() {
-    const randomPosition = () => Math.floor(Math.random() * 21); // Generates a random position between 0 and 20
-
-    return {
-        "furniture": [
+    return [
             {
                 "name": "Dresser",
                 "room": "My Bedroom",
                
                 "pos": {
-                    "x": 4,
+                    "x": 3,
                     "y": 17
                 },
                 "reward": "lockpick",
@@ -59,7 +56,7 @@ function getFurniture() {
                     "x": 15,
                     "y": 21
                 },
-                "state": "usable",
+                "state": "unusable",
                 "key":"oil",
                 "reward":"remote",
                 "locked_msg":"Ugh the drawer doesn't open, it's like it's rusty or jammed or smthn. Gotta loosen it somehow",
@@ -82,7 +79,7 @@ function getFurniture() {
                     "x": 17,
                     "y": 20
                 },
-                "state": "unused",
+                "state": "used",
                 "key":"remote",
                 "generator_on":false,
                 "locked_msg":"I need a remote to turn this on",
@@ -106,7 +103,7 @@ function getFurniture() {
                     "x": 28,
                     "y": 14
                 },
-                "state": "usable",
+                "state": "unusable",
                 "key":"Desk Note",
                 "reward":"Flashlight",
                 "locked_msg":"There's like a shit ton of books in here in a bunch of different colors, i have no idea what i'm looking for... 😵‍💫",
@@ -122,31 +119,7 @@ function getFurniture() {
                     }
                 ]
             },
-            {
-                "name":"Storage Shade",
-                "room":"Storage",
-                "wall_pos": {
-                    "x": 6,
-                    "y": 3
-                },
-                "stop_pos":{
-                    "x": 7,
-                    "y": 3
-                },
-                "state":"locked",
-                "locked_message":"No no no theres no way im going in there its dark as shit and its already fking scary out here ",
-                "unlocked_message":"Ok here goes...",
-                "sprite": [
-                    {
-                        "for": "locked",
-                        "img": "/assets/img/appartment/StorageLocked.PNG"
-                    },
-                    {
-                        "for": "unlocked",
-                        "img": "/assets/img/appartment/StorageUnlocked.PNG"
-                    }
-                ]
-            },
+            
             {
                 "name": "Generator",
                 "room": "basement",
@@ -196,7 +169,7 @@ function getFurniture() {
                     "y": 9
                 },
                 "reward": "Desk Note",
-                "state": "searchable",
+                "state": "unsearchable",
                 "search_msg":"There's a note on your desk. It says The flamingo basks in light. what?? 🤔",
                 "sprite": [
                     {
@@ -237,7 +210,7 @@ function getFurniture() {
                     "x": 27,
                     "y": 4
                 },
-                "state": "searchable",
+                "state": "unsearchable",
                 "search_msg":"there's some creepy ouija shit on your fridge with the fridge magnets. They spell out VENES. is that something i should know about??",
                 "sprite": [
                     {
@@ -257,7 +230,7 @@ function getFurniture() {
                     "x": 29,
                     "y": 3
                 },
-                "state": "searchable",
+                "state": "unsearchable",
                 "search_msg":"U left some olive oil here on the stove for some reason... I feel like it might be useful for something... 🫕",
               
                 "sprite": [
@@ -270,8 +243,32 @@ function getFurniture() {
                         "img": "/assets/img/appartment/StoveUnsearchable.PNG"
                     }
                 ]
+            },{
+                "name":"Storage Shade",
+                "room":"Storage",
+                "wall_pos": {
+                    "x": 6,
+                    "y": 3
+                },
+                "stop_pos":{
+                    "x": 7,
+                    "y": 3
+                },
+                "state":"locked",
+                "locked_message":"No no no theres no way im going in there its dark as shit and its already fking scary out here ",
+                "unlocked_message":"Ok here goes...",
+                "sprite": [
+                    {
+                        "for": "locked",
+                        "img": "/assets/img/appartment/StorageLocked.PNG"
+                    },
+                    {
+                        "for": "unlocked",
+                        "img": "/assets/img/appartment/StorageUnlocked.PNG"
+                    }
+                ]
             }
             
         ]
-    };
+    ;
 }

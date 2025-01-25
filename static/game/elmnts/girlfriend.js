@@ -16,10 +16,10 @@ class Girlfriend extends Character {
         scale(-1, 1);
         image(
           this.img,
-          -this.characterPos.x * CELL_SIZE - CELL_SIZE,
+          -this.characterPos.x * CELL_SIZE - CELL_SIZE * 2,
           this.characterPos.y * CELL_SIZE,
-          CELL_SIZE,
-          CELL_SIZE
+          CELL_SIZE * 2,
+          CELL_SIZE * 2
         );
       } else {
         if (this.getIsHiding()) {
@@ -28,16 +28,16 @@ class Girlfriend extends Character {
             this.img,
             this.characterPos.x * CELL_SIZE,
             this.characterPos.y * CELL_SIZE,
-            CELL_SIZE,
-            CELL_SIZE
+            CELL_SIZE * 2,
+            CELL_SIZE * 2
           );
         } else {
           image(
             this.img,
             this.characterPos.x * CELL_SIZE,
             this.characterPos.y * CELL_SIZE,
-            CELL_SIZE,
-            CELL_SIZE
+            CELL_SIZE * 2,
+            CELL_SIZE * 2
           );
         }
       }
