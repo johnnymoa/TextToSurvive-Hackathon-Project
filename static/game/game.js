@@ -7,7 +7,7 @@ let gameState;
 let girlfriend;
 let clown;
 
-let baseMapImg; 
+let baseMapImg;
 let girlfriendImg;
 let clownImg;
 
@@ -16,33 +16,34 @@ const soundIcon = document.getElementById("soundIcon");
 const bgMusic = document.getElementById("bgMusic");
 
 const mistralAPI = new MistralAPI();
-let chatMessages = []; 
+
+let chatMessages = [];
 
 function setup() {
     baseMapImg = loadImage('/assets/img/appartment/baseMap.PNG');
-        girlfriendImg = loadImage('/assets/img/gf.png');
-        clownImg = loadImage('/assets/img/clown.png');
+    girlfriendImg = loadImage('/assets/img/gf.png');
+    clownImg = loadImage('/assets/img/clown.png');
 
-        gameState = new GameState({
-            ...getApt(),
-            grid: getGrid()
-        });
+    gameState = new GameState({
+        ...getApt(),
+        grid: getGrid()
+    });
 
-        GRID_COLS = gameState.map_data.gridCols;
-        GRID_ROWS = gameState.map_data.gridRows;
+    GRID_COLS = gameState.map_data.gridCols;
+    GRID_ROWS = gameState.map_data.gridRows;
 
-       
-        girlfriend = new Girlfriend(gameState, girlfriendImg);
-        clown = new Clown(gameState, clownImg);
 
-        // Once loaded, initialize the P5 canvas with correct dims
-        let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
-        canvas.parent('mapWrapper');
-        adjustScale();
+    girlfriend = new Girlfriend(gameState, girlfriendImg);
+    clown = new Clown(gameState, clownImg);
+
+    // Once loaded, initialize the P5 canvas with correct dims
+    let canvas = createCanvas(GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
+    canvas.parent('mapWrapper');
+    adjustScale();
 }
 
 function draw() {
-    
+
     if (baseMapImg) {
         image(baseMapImg, 0, 0, GRID_COLS * CELL_SIZE, GRID_ROWS * CELL_SIZE);
     }
