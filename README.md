@@ -1,5 +1,5 @@
 ---
-title: The Last Message
+title: Text to Survive
 emoji: 📱
 colorFrom: gray
 colorTo: red
@@ -9,7 +9,7 @@ app_file: app.py
 pinned: false
 ---
 
-# The Last Message - Horror Escape Game
+# Text to Survive - A Text-Based Horror Escape Game
 
 An interactive horror escape game where your messages determine the fate of others.
 
@@ -22,6 +22,17 @@ docker build -t p5js-game .
 # Run the container
 
 docker run -p 8000:8000 p5js-game
+
+### API Key Setup
+
+To run this game, you'll need a Mistral AI API key. You can obtain one by:
+
+1. Going to [Mistral AI Platform](https://console.mistral.ai/)
+2. Creating an account
+3. Generating an API key in your dashboard
+
+Once you have your API key, you can set it as an environment variable:
+
 
 ## Authors
 
