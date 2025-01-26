@@ -20,14 +20,10 @@ let messageSnd;
 
 let successSnd;
 
+let isSoundOn = true;
+  
 
 
-
-let isSoundOn =
-  localStorage.getItem("isSoundOn") === null || localStorage.getItem("isSoundOn") === "false"
-    ? false
-    : true;
-    
 const soundIcon = document.getElementById("soundIcon");
 const bgMusic = document.getElementById("bgMusic");
 
@@ -67,6 +63,17 @@ async function initializeChat() {
 }
 
 async function setup() {
+
+         // Vérifier si c'est la première visite
+         if (localStorage.getItem("isSoundOn") === null) {
+          // Première visite : initialiser avec le son activé
+          localStorage.setItem("isSoundOn", "true");
+        } else {
+          // Visites suivantes : récupérer l'état précédent
+          isSoundOn = localStorage.getItem("isSoundOn") == "true";
+        }
+
+
   setStressLevel('no');
 
   baseMapImg = loadImage("/assets/img/appartment/basemap.png");

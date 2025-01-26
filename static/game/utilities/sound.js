@@ -1,5 +1,6 @@
 function playSound(sound) {
-    if (isSoundOn) {
+
+    if (typeof isSoundOn === 'undefined' ? false : isSoundOn) {
         let soundToPlay;
 
         // Determine which sound to play
@@ -64,6 +65,12 @@ function toggleSound() {
     }
     updateSoundIcon();
 }
+
+// Check if sound setting exists in localStorage, if not toggle sound on
+if (localStorage.getItem("isSoundOn") === null) {
+    toggleSound();
+}
+
 
 function updateSoundIcon() {
     soundIcon.src = isSoundOn ? "/static/assets/img/sondon.png" : "/static/assets/img/soundoff.png";

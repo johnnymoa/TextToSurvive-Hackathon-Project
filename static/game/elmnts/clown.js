@@ -31,7 +31,7 @@ class Clown extends Character {
 
   decideBehavior() {
     if (!this.isMoving) {
-      const roomEntries = this.gameState.map_data.rooms;
+      const roomEntries = this.gameState.map_data.rooms.filter(room => room.name !== "Kitchen");
 
       if (this.targetGirlfriend && !this.gameState.girlfriend.isHiding) {
         const girlfriendPos = this.targetGirlfriend.getCharacterPosition();
