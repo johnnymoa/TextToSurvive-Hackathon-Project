@@ -27,11 +27,11 @@ docker run -p 8000:8000 p5js-game
 
 | Name | Links |
 |------|-------|
-| Johnny Moacdieh | [LinkedIn](https://www.linkedin.com/in/johnny-moacdieh-935687b3/) |
-| Carl Farra | [LinkedIn](https://www.linkedin.com/in/carlfarra/) |
-| Remi Kaito | [LinkedIn](https://www.linkedin.com/in/remikaito/) |
+| Johnny Moacdieh | [LinkedIn](https://www.linkedin.com/in/johnny-moacdieh-935687b3/) • [Website](http://johnnym.dev/) |
+| Carl Farra | [LinkedIn](https://www.linkedin.com/in/carlfarra/) • [Website](https://rpsdaily.com/) |
+| Remi Kaito | [LinkedIn](https://www.linkedin.com/in/remikaito/) • [X/Twitter](https://x.com/mrrremi) |
 | Cosimo Taiuti | [LinkedIn](https://www.linkedin.com/in/cosimotaiuti/) |
-| Joseph Pollack | [LinkedIn](https://www.linkedin.com/in/josephpollack/) |
+| Joseph "Tonic" Pollack | [LinkedIn](https://www.linkedin.com/in/josephpollack/) • [HuggingFace](https://huggingface.co/Tonic) |
 | Luca Teodorescu | [LinkedIn](https://www.linkedin.com/in/luca-teodorescu/) |
 
 
