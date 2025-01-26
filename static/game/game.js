@@ -24,9 +24,10 @@ let successSnd;
 
 
 let isSoundOn =
-  localStorage.getItem("isSoundOn") === null
-    ? true
-    : localStorage.getItem("isSoundOn") !== "false";
+  localStorage.getItem("isSoundOn") === null || localStorage.getItem("isSoundOn") === "false"
+    ? false
+    : true;
+    
 const soundIcon = document.getElementById("soundIcon");
 const bgMusic = document.getElementById("bgMusic");
 

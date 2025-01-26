@@ -46,7 +46,6 @@ class GameState {
     );
   }
 
-
   getStressPrompt() {
     const currentStress = this.girlfriend ? this.girlfriend.stressLevel : 50; // Default to 50 if girlfriend not initialized
 
@@ -187,6 +186,7 @@ ${this.girlfriend.getCurrentRoom() !== this.clown.getCurrentRoom()
       }
 Your text responses should be:
 -- Brief and urgent
+-- Avoid using asterisks in the textMessage content
 -- Reflect genuine fear and panic
 -- Write like real text messages (short, quick responses)
 -- No time for pleasantries or long explanations

@@ -38,7 +38,7 @@ async function strongIndependantWoman(){
       { role: "user", content: `
         **your boyfriend has been away from his phone for a while and has not replied promptly to your last message, 
         you shall based on all that you know decide to take an action, also you're pissed at the boyfriend**
-        you are brave, strong, fabulous and will dosomething about this situation
+        you are brave, strong, fabulous and will do something about this situation
         you're gall is to escape the house and avoid the clown at all costs
         
         ` },

@@ -75,6 +75,7 @@ function drawLabels(rooms) {
 }
 
 function drawWallsAndDoors() {
+    let grid = gameState.map_data.grid;
     for (let y = 0; y < GRID_ROWS; y++) {
         for (let x = 0; x < GRID_COLS; x++) {
             const cell = grid[y][x];
